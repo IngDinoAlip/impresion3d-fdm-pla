@@ -51,8 +51,8 @@ h1 em{font-style:normal;color:var(--accent)}
 .btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
 .btn:hover{filter:brightness(1.08)}
 .hero-visual{position:relative}
-.hero-visual img{border-radius:var(--r);border:1px solid var(--line);box-shadow:var(--shadow);aspect-ratio:4/3;object-fit:cover;width:100%}
-.chips{position:absolute;right:-6px;bottom:-22px;display:grid;gap:8px;width:min(260px,70%)}
+.hero-visual img{border-radius:var(--r);border:1px solid var(--line);box-shadow:var(--shadow);aspect-ratio:3/2;object-fit:cover;width:100%}
+.chips{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%;margin-top:14px}
 .chip{background:color-mix(in srgb,var(--panel) 92%,transparent);backdrop-filter:blur(8px);border:1px solid var(--line);border-radius:12px;padding:9px 12px;font-size:13px;box-shadow:var(--shadow)}
 .chip b{display:block;font-size:14px}
 .chip span{color:var(--muted)}
@@ -162,7 +162,7 @@ footer{padding:36px 0;border-top:1px solid var(--line);color:var(--muted);font-s
       </div>
     </div>
     <div class="hero-visual">
-      <img src="articulo/anexo/p34_1.jpg" alt="Piezas de PLA fabricadas sobre una mesa de madera" fetchpriority="high">
+      <img src="articulo/anexo/hero.jpg" alt="Piezas de PLA fabricadas sobre una mesa de madera" fetchpriority="high">
       <div class="chips" aria-label="Variables estudiadas">
         <div class="chip"><b>Relleno</b><span>Densidad y patrón interno</span></div>
         <div class="chip"><b>Paredes</b><span>Número de perímetros</span></div>
