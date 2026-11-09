@@ -254,7 +254,8 @@ footer{padding:36px 0;border-top:1px solid var(--line);color:var(--muted);font-s
     <div class="card" id="vinfo">
       <h3 id="vName">–</h3>
       <div class="specs" id="vSpecs"></div>
-      <p>Pieza de compresión generada en Fusion 360: dos placas de apoyo unidas por una estructura orgánica que reparte la carga. En el corte, el interior se muestra en verde.</p>
+      <p>Geometría G1 de compresión generada en Fusion 360: dos placas de apoyo unidas por una estructura orgánica que reparte la carga. En el corte, el interior se muestra en verde.</p>
+      <p class="note" id="vData"></p>
       <a class="btn primary" id="vDl" href="#" download>⬇ Descargar STL</a>
       <p class="note">Se puede abrir en cualquier laminador (Creality Print, Cura) o visor 3D.</p>
     </div>
@@ -600,6 +601,8 @@ function startViewer(){
   $("#vName").textContent=m.name;$("#vDl").href=m.file;
   $("#vSpecs").innerHTML=[["Dimensiones",m.dims.map(d=>fmt(d,0)).join(" × ")+" mm"],["Triángulos",m.tris.toLocaleString("es-CO")],["Volumen del sólido",fmt(m.vol_cm3,1)+" cm³"],["Archivo STL",fmt(m.mb,1)+" MB"]]
     .map(([a,b])=>`<div><small>${a}</small><b>${b}</b></div>`).join("");
+  if(m.id==="compresion1"){const r=DATA.filter(d=>d.ensayo==="C"&&d.diseno==="G1"),lo=r.reduce((a,b)=>a.fmax_N<b.fmax_N?a:b),hi=r.reduce((a,b)=>a.fmax_N>b.fmax_N?a:b);
+    $("#vData").innerHTML=`Se ensayó en ${r.length} condiciones (3 configuraciones × 3 orientaciones): de <b>${fmt(lo.fmax_N)} N</b> (${CFG[lo.config].n}, ${ORI[lo.orientacion].s}) a <b>${fmt(hi.fmax_N)} N</b> (${CFG[hi.config].n}, ${ORI[hi.orientacion].s}). <a href="#explorador">Ver en el explorador</a>.`;}
   const gl=canvas.getContext("webgl2",{antialias:true,alpha:true});
   if(!gl){canvas.style.display="none";$("#vfail").style.display="block";return;}
   const mesh=decodeModel(m);
