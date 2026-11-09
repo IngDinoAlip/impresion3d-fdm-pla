@@ -143,7 +143,7 @@ footer{padding:36px 0;border-top:1px solid var(--line);color:var(--muted);font-s
     <svg viewBox="0 0 32 32" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linejoin="round"><path d="M16 3l11 6v14l-11 6L5 23V9z"/><path d="M5 9l11 6 11-6M16 15v14"/></svg><span>Proyecto FDM</span></a>
   <ul id="menu">
     <li><a href="#inicio">Inicio</a></li><li><a href="#proyecto">Proyecto</a></li><li><a href="#metodologia">Metodología</a></li>
-    <li><a href="#resultados">Resultados</a></li><li><a href="#galeria">Explora</a></li><li><a class="cta" href="#explorador">Explorador</a></li>
+    <li><a href="#resultados">Resultados</a></li><li><a href="#eficiencia">Eficiencia</a></li><li><a href="#galeria">Explora</a></li><li><a class="cta" href="#explorador">Explorador</a></li>
   </ul>
   <button class="icon-btn" id="theme" aria-label="Cambiar tema claro u oscuro" title="Cambiar tema">☾</button>
 </div></header>
@@ -240,6 +240,28 @@ footer{padding:36px 0;border-top:1px solid var(--line);color:var(--muted);font-s
   <p class="note">Clic en un encabezado para ordenar. Código: ensayo-geometría-configuración-orientación (V90 = vertical, D45 = inclinada, H0 = horizontal).</p>
 </div></section>
 
+<section id="eficiencia"><div class="wrap">
+  <h2>Eficiencia: fuerza contra masa</h2>
+  <p class="sub">Cada punto es una probeta. La línea punteada marca la fuerza por gramo promedio de la configuración Fina: los puntos por debajo de ella rinden menos por unidad de material.</p>
+  <div class="controls"><div class="seg" role="group" aria-label="Ensayo del gráfico de dispersión" id="segSc">
+    <button data-v="T" aria-pressed="true">Tensión</button><button data-v="C" aria-pressed="false">Compresión</button><button data-v="F" aria-pressed="false">Flexión</button></div></div>
+  <div class="chartbox"><svg id="scatter" viewBox="0 0 760 400" role="img" aria-label="Dispersión de fuerza máxima contra masa por probeta"></svg>
+    <div class="legend" id="scLegend"></div></div>
+  <p class="note">Círculo = geometría G1, cuadrado = G2. Pasa el cursor para ver la probeta. La pendiente de la línea es la eficiencia (N/g) media de Fina en el ensayo elegido.</p>
+</div></section>
+
+<section id="tiempo"><div class="wrap">
+  <h2>Tiempo de impresión y filamento</h2>
+  <p class="sub">Estimaciones de la vista previa de Creality Print para una pieza en orientación vertical y en horizontal. Clic en una imagen para ampliarla.</p>
+  <div class="grid2">
+    <div class="card"><h3>Vertical (90°)</h3><img class="zoom" src="articulo/anexo/lam_a.jpg" alt="Vista previa del código G con la pieza en orientación vertical" loading="lazy" style="border-radius:10px;margin:8px 0;cursor:zoom-in">
+      <div class="kpis"><div class="kpi"><small>Tiempo</small><b>48 min 19 s</b></div><div class="kpi"><small>Filamento</small><b>6,77 g</b></div></div></div>
+    <div class="card"><h3>Horizontal (0°)</h3><img class="zoom" src="articulo/anexo/lam_b.jpg" alt="Vista previa del código G con la pieza en orientación horizontal" loading="lazy" style="border-radius:10px;margin:8px 0;cursor:zoom-in">
+      <div class="kpis"><div class="kpi"><small>Tiempo</small><b>23 min 22 s</b></div><div class="kpi"><small>Filamento</small><b>5,54 g</b></div></div></div>
+  </div>
+  <div class="card" style="margin-top:16px" id="timeBars"></div>
+</div></section>
+
 <section id="galeria"><div class="wrap">
   <h2>Explora el proceso</h2>
   <p class="sub">Capturas y fotografías del trabajo: del diseño generativo al laminado y las piezas fabricadas. Haz clic para ampliar.</p>
@@ -276,6 +298,31 @@ footer{padding:36px 0;border-top:1px solid var(--line);color:var(--muted);font-s
   </div>
 </div></section>
 
+<section id="comparador"><div class="wrap">
+  <h2>Comparador de condiciones</h2>
+  <p class="sub">Enfrenta dos combinaciones del mismo ensayo y mira la diferencia en cada variable.</p>
+  <div class="controls">
+    <label class="sel">Ensayo<select id="cE"><option value="T">Tensión</option><option value="C">Compresión</option><option value="F">Flexión</option></select></label>
+    <label class="sel">Geometría<select id="cG"><option value="avg">Media G1+G2</option><option value="G1">G1</option><option value="G2">G2</option></select></label>
+    <label class="sel">A · Configuración<select id="cAc"><option value="Fina">Fina</option><option value="Estandar">Estándar</option><option value="Fuerte">Fuerte</option></select></label>
+    <label class="sel">A · Orientación<select id="cAo"><option value="H0">Horizontal (0°)</option><option value="D45">Inclinada (45°)</option><option value="V90">Vertical (90°)</option></select></label>
+    <label class="sel">B · Configuración<select id="cBc"><option value="Fina">Fina</option><option value="Estandar">Estándar</option><option value="Fuerte" selected>Fuerte</option></select></label>
+    <label class="sel">B · Orientación<select id="cBo"><option value="H0">Horizontal (0°)</option><option value="D45">Inclinada (45°)</option><option value="V90">Vertical (90°)</option></select></label>
+  </div>
+  <div class="tablewrap"><table id="cmp"><thead><tr><th>Variable</th><th class="num">A</th><th class="num">B</th><th class="num">B frente a A</th></tr></thead><tbody></tbody></table></div>
+  <p class="note" id="cmpNote"></p>
+</div></section>
+
+<section id="conclusion"><div class="wrap">
+  <h2>Conclusión</h2>
+  <div class="question" style="font-size:22px;font-weight:600;line-height:1.4">La orientación horizontal y la configuración Fuerte dieron la mayor carga, pero con más masa y menos fuerza por gramo: elegir parámetros exige equilibrar carga y material.</div>
+  <div class="grid3" style="margin-top:18px">
+    <div class="card"><h3>Carga</h3><p>Horizontal y configuración Fuerte maximizan la fuerza soportada en los tres ensayos.</p></div>
+    <div class="card"><h3>Material</h3><p>Fuerte pesa más del doble que Fina y rinde menos fuerza por gramo.</p></div>
+    <div class="card"><h3>Alcance</h3><p>Estudio exploratorio con una probeta por condición y carga manual; las tendencias requieren replicación.</p></div>
+  </div>
+</div></section>
+
 <section id="referencias"><div class="wrap">
   <h2>Documentos y referencias</h2>
   <p class="sub">Todo el material del proyecto está abierto en el repositorio.</p>
@@ -294,7 +341,10 @@ footer{padding:36px 0;border-top:1px solid var(--line);color:var(--muted);font-s
   </div>
 </div></section>
 </main>
-<footer><div class="wrap">Alisson Dayana Navarro Rodríguez · Universidad Ean · Facultad de Ingeniería · Bogotá, Colombia · Seminario de Investigación 2026</div></footer>
+<footer><div class="wrap" style="display:flex;gap:20px;align-items:center;justify-content:space-between;flex-wrap:wrap">
+  <div>Alisson Dayana Navarro Rodríguez · Universidad Ean · Facultad de Ingeniería · Bogotá, Colombia · Seminario de Investigación 2026</div>
+  <div style="display:flex;gap:12px;align-items:center"><img src="poster/qr_articulo.png" alt="Código QR que abre el artículo en PDF" width="84" height="84" style="background:#fff;border-radius:8px;padding:4px"><span>Escanea para abrir<br>el artículo (PDF)</span></div>
+</div></footer>
 <div id="tip" role="tooltip"></div>
 
 <script>
@@ -431,9 +481,61 @@ function explorer(){
 /* menu activo */
 const links=$$("#menu a");
 const io=new IntersectionObserver(es=>es.forEach(en=>{if(en.isIntersecting){links.forEach(a=>a.classList.toggle("active",a.getAttribute("href")==="#"+en.target.id))}}),{rootMargin:"-45% 0px -50% 0px"});
-["inicio","proyecto","metodologia","resultados","galeria","explorador","referencias"].forEach(id=>{const el=document.getElementById(id);if(el)io.observe(el)});
+["inicio","proyecto","metodologia","resultados","eficiencia","tiempo","galeria","explorador","comparador","conclusion","referencias"].forEach(id=>{const el=document.getElementById(id);if(el)io.observe(el)});
 
-findings();draw();explorer();
+/* dispersion fuerza vs masa */
+const SC={e:"T"};
+seg("#segSc",v=>{SC.e=v;scatter();});
+function scatter(){
+  const W=760,H=400,m={l:62,r:20,t:20,b:52},pw=W-m.l-m.r,ph=H-m.t-m.b;
+  const rows=DATA.filter(r=>r.ensayo===SC.e);
+  const xmax=Math.ceil(Math.max(...rows.map(r=>r.peso_g))+0.5), ymaxRaw=Math.max(...rows.map(r=>r.fmax_N));
+  const ys=niceStep(ymaxRaw/5), ymax=Math.ceil(ymaxRaw/ys)*ys;
+  const X=v=>m.l+v/xmax*pw, Y=v=>m.t+ph-v/ymax*ph;
+  const k=mean(rows.filter(r=>r.config==="Fina").map(r=>r.npg));
+  let s="";
+  for(let t=0;t<=ymax+1e-9;t+=ys)s+=`<line class="axis" x1="${m.l}" x2="${W-m.r}" y1="${Y(t)}" y2="${Y(t)}" stroke-dasharray="${t?3:0}"/><text x="${m.l-8}" y="${Y(t)+4}" text-anchor="end">${fmt(t,0)}</text>`;
+  for(let t=0;t<=xmax;t+=1)s+=`<text x="${X(t)}" y="${H-m.b+18}" text-anchor="middle">${t}</text>`;
+  s+=`<text x="${m.l+pw/2}" y="${H-10}" text-anchor="middle">Masa (g)</text><text x="16" y="${m.t+ph/2}" transform="rotate(-90 16 ${m.t+ph/2})" text-anchor="middle">Fuerza máxima (N)</text>`;
+  const x2=Math.min(xmax,ymax/k);
+  s+=`<line x1="${X(0)}" y1="${Y(0)}" x2="${X(x2)}" y2="${Y(k*x2)}" stroke="var(--fina)" stroke-width="2" stroke-dasharray="6 5"/>`;
+  rows.forEach(r=>{
+    const cx=X(r.peso_g),cy=Y(r.fmax_N),c=CFG[r.config].c,t=`<b>${r.id}</b><br>${fmt(r.fmax_N)} N · ${fmt(r.peso_g)} g<br>${fmt(r.npg)} N/g · ${ORI[r.orientacion].n}<br>${r.falla}`;
+    s+= r.diseno==="G1"
+      ? `<circle class="bar pt" cx="${cx}" cy="${cy}" r="8" fill="${c}" stroke="var(--bg)" stroke-width="1.5" data-t="${t}"/>`
+      : `<rect class="bar pt" x="${cx-7}" y="${cy-7}" width="14" height="14" rx="2" fill="${c}" stroke="var(--bg)" stroke-width="1.5" data-t="${t}"/>`;
+  });
+  $("#scatter").innerHTML=s;
+  $$("#scatter .pt").forEach(b=>{b.onmousemove=e=>showTip(e,b.dataset.t);b.onmouseleave=hideTip;});
+  $("#scLegend").innerHTML=["Fina","Estandar","Fuerte"].map(c=>`<span><span class="dot" style="background:${CFG[c].c}"></span>${CFG[c].n}</span>`).join("")+`<span>┄ Fina media: ${fmt(k)} N/g</span>`;
+}
+
+/* tiempos: barras comparativas */
+function timeBars(){
+  const rows=[["Tiempo de impresión","48 min 19 s","23 min 22 s",48*60+19,23*60+22],["Masa de filamento","6,77 g","5,54 g",6.77,5.54],["Longitud de filamento","2,27 m","1,86 m",2.27,1.86],["Tiempo en soportes","9 min 53 s","3 min 49 s",9*60+53,3*60+49]];
+  $("#timeBars").innerHTML=`<h3>Vertical frente a horizontal</h3>`+rows.map(([n,a,b,x,y])=>{
+    const mx=Math.max(x,y),d=(x/y-1)*100;
+    return `<div style="margin:12px 0"><div style="display:flex;justify-content:space-between"><b>${n}</b><span style="color:var(--accent)">vertical ${d>=0?"+":""}${fmt(d,0)} %</span></div>
+    <div style="display:grid;grid-template-columns:90px 1fr 90px;gap:8px;align-items:center;font-size:13px;color:var(--muted);margin-top:4px"><span>Vertical</span><div class="meter"><i style="width:${x/mx*100}%"></i></div><span>${a}</span>
+    <span>Horizontal</span><div class="meter"><i style="width:${y/mx*100}%;background:var(--accent2)"></i></div><span>${b}</span></div></div>`}).join("")+
+    `<p class="note">Valores leídos de la vista previa del código G en Creality Print (Hi Combo, boquilla de 0,4 mm).</p>`;
+}
+
+/* comparador */
+function comparar(){
+  const e=$("#cE").value,g=$("#cG").value,ac=$("#cAc").value,ao=$("#cAo").value,bc=$("#cBc").value,bo=$("#cBo").value;
+  const vars=[["fmax_N","Fuerza máxima","N"],["deform_mm","Deformación","mm"],["peso_g","Masa","g"],["npg","Fuerza / masa","N/g"]];
+  $("#cmp tbody").innerHTML=vars.map(([k,n,u])=>{
+    const a=val(e,ac,ao,k,g),b=val(e,bc,bo,k,g),d=(b/a-1)*100;
+    return `<tr><td>${n}</td><td class="num">${fmt(a)} ${u}</td><td class="num">${fmt(b)} ${u}</td><td class="num" style="color:${d>=0?"var(--accent)":"var(--danger)"};font-weight:700">${d>=0?"+":""}${fmt(d,0)} %</td></tr>`}).join("");
+  $("#cmpNote").textContent=`A: ${CFG[ac].n}, ${ORI[ao].n}. B: ${CFG[bc].n}, ${ORI[bo].n}. ${ENS[e]}, ${g==="avg"?"media de G1 y G2":g}.`;
+}
+["#cE","#cG","#cAc","#cAo","#cBc","#cBo"].forEach(s=>$(s).addEventListener("change",comparar));
+
+/* ampliar cualquier imagen con clase zoom */
+document.addEventListener("click",e=>{const i=e.target.closest("img.zoom");if(!i)return;$("#dlgimg").src=i.src;$("#dlgimg").alt=i.alt;$("#dlg").showModal()});
+
+findings();draw();explorer();scatter();timeBars();comparar();
 </script>
 </body>
 </html>

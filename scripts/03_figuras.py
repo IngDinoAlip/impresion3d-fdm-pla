@@ -20,7 +20,7 @@ TIT = {"T": "Tensión", "C": "Compresión", "F": "Flexión"}
 plt.rcParams.update({"font.family": "Arial", "axes.spines.top": False, "axes.spines.right": False})
 
 
-def fig1(fs=26, size=(21, 4.1)):
+def fig1(fs=26, size=(21, 4.3)):
     fig, axs = plt.subplots(1, 3, figsize=size, sharey=False)
     w = 0.26
     for ax, e in zip(axs, "TCF"):
