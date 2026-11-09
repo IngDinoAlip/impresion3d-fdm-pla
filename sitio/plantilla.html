@@ -126,6 +126,11 @@ svg .bar:hover{opacity:.8}
 .hud .seg button{padding:7px 11px;font-size:13px}
 .cut{display:flex;gap:8px;align-items:center;background:color-mix(in srgb,var(--panel) 88%,transparent);backdrop-filter:blur(6px);border:1px solid var(--line);border-radius:12px;padding:6px 12px;font-size:13px;color:var(--muted)}
 .cut input{accent-color:var(--accent);width:120px}
+.seg{flex-wrap:wrap;max-width:100%}
+.arrow3d{position:absolute;top:50%;transform:translateY(-50%);width:42px;height:42px;border-radius:50%;border:1px solid var(--line);background:color-mix(in srgb,var(--panel) 85%,transparent);color:var(--text);font-size:24px;line-height:1;cursor:pointer;backdrop-filter:blur(6px)}
+.arrow3d:hover{background:var(--accent);color:var(--accent-ink)}
+.arrow3d.prev{left:10px}.arrow3d.next{right:10px}
+.vcount{position:absolute;top:10px;right:12px;font-size:13px;color:var(--text);background:color-mix(in srgb,var(--panel) 85%,transparent);border:1px solid var(--line);border-radius:10px;padding:3px 10px}
 .vhint{position:absolute;top:10px;left:12px;font-size:12px;color:var(--muted);pointer-events:none}
 .vfail{display:none;padding:40px 20px;text-align:center;color:var(--muted)}
 .specs{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
@@ -245,6 +250,9 @@ footer{padding:36px 0;border-top:1px solid var(--line);color:var(--muted);font-s
     <div class="vwrap" id="vwrap">
       <canvas id="cv" tabindex="0" aria-label="Visor 3D de la pieza de compresión: arrastra para girar, rueda para acercar"></canvas>
       <div class="vhint">Arrastra · rueda · doble clic = restablecer</div>
+      <div class="vcount" id="vCount" aria-live="polite">1 / 1</div>
+      <button class="arrow3d prev" id="vPrev" aria-label="Modelo anterior" title="Modelo anterior">‹</button>
+      <button class="arrow3d next" id="vNext" aria-label="Modelo siguiente" title="Modelo siguiente">›</button>
       <div class="hud">
         <div class="seg" role="group" aria-label="Vistas" id="vViews">
           <button data-v="auto" aria-pressed="true">⟳ Giro</button><button data-v="front" aria-pressed="false">Frontal</button><button data-v="top" aria-pressed="false">Superior</button><button data-v="iso" aria-pressed="false">Isométrica</button></div>
@@ -635,11 +643,15 @@ void main(){if(vZ>uCut)discard;
     m=MODELOS[i];mesh=decodeModel(m);
     gl.bindVertexArray(vao);gl.bindBuffer(gl.ARRAY_BUFFER,vb);gl.bufferData(gl.ARRAY_BUFFER,mesh.pos,gl.STATIC_DRAW);
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,ib);gl.bufferData(gl.ELEMENT_ARRAY_BUFFER,mesh.idx,gl.STATIC_DRAW);
+    cur=i;[...$("#vModels").children].forEach((b,k)=>b.setAttribute("aria-pressed",k===i));
+    $("#vCount").textContent=`${i+1} / ${MODELOS.length}`;
     st.cut=100;$("#vCut").value=100;info();st.dirty=true;
   }
-  const sel=$("#vModels");
-  if(MODELOS.length>1){sel.innerHTML=MODELOS.map((x,i)=>`<button data-v="${i}" aria-pressed="${i===0}">${x.name}</button>`).join("");seg("#vModels",v=>setModel(+v));}
-  else sel.parentElement.style.display="none";
+  let cur=0;const sel=$("#vModels"),nM=MODELOS.length;
+  if(nM>1){sel.innerHTML=MODELOS.map((x,i)=>`<button data-v="${i}" aria-pressed="${i===0}">${x.name}</button>`).join("");
+    sel.addEventListener("click",e=>{const b=e.target.closest("button");if(b)setModel(+b.dataset.v)});
+    $("#vPrev").onclick=()=>setModel((cur-1+nM)%nM);$("#vNext").onclick=()=>setModel((cur+1)%nM);}
+  else{sel.parentElement.style.display="none";$("#vPrev").style.display=$("#vNext").style.display=$("#vCount").style.display="none";}
   setModel(0);
   function render(){
     const dpr=Math.min(devicePixelRatio||1,2),w=Math.max(1,Math.round(canvas.clientWidth*dpr)),h=Math.max(1,Math.round(canvas.clientHeight*dpr));
