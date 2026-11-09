@@ -40,7 +40,7 @@ PLA PolyMaster · impresora Creality Hi Combo · laminado en Creality Print · 2
 ```
 index.html          sitio interactivo (un solo archivo, sin dependencias)
 sitio/              plantilla del sitio y modelo 3D empaquetado para el visor
-modelos/            modelos 3D en STL (compresion1.stl: pieza de compresión generativa)
+modelos/            las seis geometrías generativas en STL (G1 y G2 de tensión, compresión y flexión)
 articulo/           artículo (LaTeX y PDF), tablas generadas, apéndice con las capturas
 poster/             póster A1 (LaTeX y PDF) y código QR
 datos/              resultados.csv (una fila por probeta) y resumen por condición

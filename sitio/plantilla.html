@@ -239,7 +239,8 @@ footer{padding:36px 0;border-top:1px solid var(--line);color:var(--muted);font-s
 
 <section id="modelo3d"><div class="wrap">
   <h2>Modelo 3D</h2>
-  <p class="sub">Geometría de la pieza de compresión obtenida con el diseño generativo de Fusion 360. Arrastra para girarla, usa la rueda (o pellizca) para acercar y desliza el corte para ver el interior.</p>
+  <p class="sub">Las seis geometrías (G1 y G2 de tensión, compresión y flexión) obtenidas con el diseño generativo de Fusion 360. Elige una y arrastra para girarla, usa la rueda (o pellizca) para acercar y desliza el corte para ver el interior.</p>
+  <div class="controls"><div class="seg" role="group" aria-label="Modelo 3D" id="vModels"></div></div>
   <div class="viewer">
     <div class="vwrap" id="vwrap">
       <canvas id="cv" tabindex="0" aria-label="Visor 3D de la pieza de compresión: arrastra para girar, rueda para acercar"></canvas>
@@ -254,7 +255,7 @@ footer{padding:36px 0;border-top:1px solid var(--line);color:var(--muted);font-s
     <div class="card" id="vinfo">
       <h3 id="vName">–</h3>
       <div class="specs" id="vSpecs"></div>
-      <p>Geometría G1 de compresión generada en Fusion 360: dos placas de apoyo unidas por una estructura orgánica que reparte la carga. En el corte, el interior se muestra en verde.</p>
+      <p id="vDesc"></p>
       <p class="note" id="vData"></p>
       <a class="btn primary" id="vDl" href="#" download>⬇ Descargar STL</a>
       <p class="note">Se puede abrir en cualquier laminador (Creality Print, Cura) o visor 3D.</p>
@@ -596,16 +597,20 @@ function decodeModel(m){
   return{pos,idx,zmin:(lo[2]-c[2])*s,zmax:(hi[2]-c[2])*s};
 }
 function startViewer(){
-  const sec=$("#modelo3d"),canvas=$("#cv"),m=MODELOS[0];
+  const sec=$("#modelo3d"),canvas=$("#cv");let m=MODELOS[0],mesh;
   if(!m){sec.style.display="none";return;}
-  $("#vName").textContent=m.name;$("#vDl").href=m.file;
-  $("#vSpecs").innerHTML=[["Dimensiones",m.dims.map(d=>fmt(d,0)).join(" × ")+" mm"],["Triángulos",m.tris.toLocaleString("es-CO")],["Volumen del sólido",fmt(m.vol_cm3,1)+" cm³"],["Archivo STL",fmt(m.mb,1)+" MB"]]
-    .map(([a,b])=>`<div><small>${a}</small><b>${b}</b></div>`).join("");
-  if(m.id==="compresion1"){const r=DATA.filter(d=>d.ensayo==="C"&&d.diseno==="G1"),lo=r.reduce((a,b)=>a.fmax_N<b.fmax_N?a:b),hi=r.reduce((a,b)=>a.fmax_N>b.fmax_N?a:b);
-    $("#vData").innerHTML=`Se ensayó en ${r.length} condiciones (3 configuraciones × 3 orientaciones): de <b>${fmt(lo.fmax_N)} N</b> (${CFG[lo.config].n}, ${ORI[lo.orientacion].s}) a <b>${fmt(hi.fmax_N)} N</b> (${CFG[hi.config].n}, ${ORI[hi.orientacion].s}). <a href="#explorador">Ver en el explorador</a>.`;}
+  function info(){
+    $("#vName").textContent=m.name;$("#vDl").href=m.file;
+    $("#vSpecs").innerHTML=[["Dimensiones",m.dims.map(d=>fmt(d,0)).join(" × ")+" mm"],["Triángulos",m.tris.toLocaleString("es-CO")],["Volumen del sólido",fmt(m.vol_cm3,1)+" cm³"],["Archivo STL",fmt(m.mb,1)+" MB"]]
+      .map(([a,b])=>`<div><small>${a}</small><b>${b}</b></div>`).join("");
+    $("#vDesc").textContent=`Geometría ${m.diseno} de ${{C:"compresión",F:"flexión",T:"tensión"}[m.ensayo]} generada en Fusion 360. En el corte, el interior se muestra en verde.`;
+    const r=DATA.filter(d=>d.ensayo===m.ensayo&&d.diseno===m.diseno);
+    if(!r.length){$("#vData").textContent="";return;}
+    const lo=r.reduce((a,b)=>a.fmax_N<b.fmax_N?a:b),hi=r.reduce((a,b)=>a.fmax_N>b.fmax_N?a:b);
+    $("#vData").innerHTML=`Se ensayó en ${r.length} condiciones (3 configuraciones × 3 orientaciones): de <b>${fmt(lo.fmax_N)} N</b> (${CFG[lo.config].n}, ${ORI[lo.orientacion].s}) a <b>${fmt(hi.fmax_N)} N</b> (${CFG[hi.config].n}, ${ORI[hi.orientacion].s}). <a href="#explorador">Ver en el explorador</a>.`;
+  }
   const gl=canvas.getContext("webgl2",{antialias:true,alpha:true});
   if(!gl){canvas.style.display="none";$("#vfail").style.display="block";return;}
-  const mesh=decodeModel(m);
   const vs=`#version 300 es
 in vec3 aP;uniform mat4 uV,uP;out vec3 vPv;out float vZ;
 void main(){vec4 p=uV*vec4(aP,1.0);vPv=p.xyz;vZ=aP.z;gl_Position=uP*p;}`;
@@ -621,13 +626,21 @@ void main(){if(vZ>uCut)discard;
   const sh=(t,s)=>{const x=gl.createShader(t);gl.shaderSource(x,s);gl.compileShader(x);if(!gl.getShaderParameter(x,gl.COMPILE_STATUS))console.error(gl.getShaderInfoLog(x));return x};
   const pr=gl.createProgram();gl.attachShader(pr,sh(gl.VERTEX_SHADER,vs));gl.attachShader(pr,sh(gl.FRAGMENT_SHADER,fs));gl.linkProgram(pr);gl.useProgram(pr);
   const vao=gl.createVertexArray();gl.bindVertexArray(vao);
-  const vb=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,vb);gl.bufferData(gl.ARRAY_BUFFER,mesh.pos,gl.STATIC_DRAW);
-  const loc=gl.getAttribLocation(pr,"aP");gl.enableVertexAttribArray(loc);gl.vertexAttribPointer(loc,3,gl.FLOAT,false,0,0);
-  const ib=gl.createBuffer();gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,ib);gl.bufferData(gl.ELEMENT_ARRAY_BUFFER,mesh.idx,gl.STATIC_DRAW);
-  const U=n=>gl.getUniformLocation(pr,n);
+  const vb=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,vb);  const loc=gl.getAttribLocation(pr,"aP");gl.enableVertexAttribArray(loc);gl.vertexAttribPointer(loc,3,gl.FLOAT,false,0,0);
+  const ib=gl.createBuffer();gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,ib);  const U=n=>gl.getUniformLocation(pr,n);
   gl.enable(gl.DEPTH_TEST);
   const st={yaw:.8,pitch:.45,dist:4.0,auto:!matchMedia("(prefers-reduced-motion: reduce)").matches,cut:100,dirty:true,vis:true};
   const hex=h=>{h=h.trim().replace("#","");return[0,2,4].map(i=>parseInt(h.substr(i,2),16)/255)};
+  function setModel(i){
+    m=MODELOS[i];mesh=decodeModel(m);
+    gl.bindVertexArray(vao);gl.bindBuffer(gl.ARRAY_BUFFER,vb);gl.bufferData(gl.ARRAY_BUFFER,mesh.pos,gl.STATIC_DRAW);
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,ib);gl.bufferData(gl.ELEMENT_ARRAY_BUFFER,mesh.idx,gl.STATIC_DRAW);
+    st.cut=100;$("#vCut").value=100;info();st.dirty=true;
+  }
+  const sel=$("#vModels");
+  if(MODELOS.length>1){sel.innerHTML=MODELOS.map((x,i)=>`<button data-v="${i}" aria-pressed="${i===0}">${x.name}</button>`).join("");seg("#vModels",v=>setModel(+v));}
+  else sel.parentElement.style.display="none";
+  setModel(0);
   function render(){
     const dpr=Math.min(devicePixelRatio||1,2),w=Math.max(1,Math.round(canvas.clientWidth*dpr)),h=Math.max(1,Math.round(canvas.clientHeight*dpr));
     if(canvas.width!==w||canvas.height!==h){canvas.width=w;canvas.height=h}

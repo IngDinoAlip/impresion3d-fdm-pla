@@ -1,7 +1,7 @@
 """Empaqueta STLs binarios para el visor 3D del sitio (sitio/modelos.json) y los copia a modelos/.
 Soldadura de vertices + posiciones en uint16 (cuantizadas al bbox) + indices uint16. Sin normales: el visor sombrea por faceta.
 Uso: python 13_modelo3d.py [ruta.stl "Nombre visible"] ...   (por defecto: Downloads/compresion1.stl)"""
-import base64, json, os, shutil, struct, sys
+import base64, json, os, shutil, struct, sys, unicodedata
 import numpy as np
 
 R = os.path.join(os.path.dirname(__file__), "..")
@@ -28,10 +28,12 @@ def empaquetar(path, nombre):
     vol = abs(np.einsum("ij,ij->i", t[:, 0], np.cross(t[:, 1], t[:, 2])).sum() / 6) / 1000.0   # cm3
     cab = struct.pack("<6f2I", *lo, *hi, len(pos), n)
     blob = cab + pad4(q.tobytes()) + pad4(idx.astype("<u2").tobytes())
-    base = os.path.splitext(os.path.basename(path))[0]
+    base = unicodedata.normalize("NFKD", os.path.splitext(os.path.basename(path))[0]).encode("ascii", "ignore").decode().lower()
+    ens = {"c": "C", "f": "F", "t": "T"}[base[0]]
+    dis = "G" + base[-1]
     os.makedirs(os.path.join(R, "modelos"), exist_ok=True)
     shutil.copyfile(path, os.path.join(R, "modelos", base + ".stl"))
-    return dict(id=base, name=nombre, file=f"modelos/{base}.stl", mb=round(len(raw) / 1e6, 1),
+    return dict(id=base, name=nombre, ensayo=ens, diseno=dis, file=f"modelos/{base}.stl", mb=round(len(raw) / 1e6, 1),
                 dims=[round(float(h - l), 1) for l, h in zip(lo, hi)], tris=int(n), verts=int(len(pos)),
                 vol_cm3=round(float(vol), 1), b64=base64.b64encode(blob).decode())
 
