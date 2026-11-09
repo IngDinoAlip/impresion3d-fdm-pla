@@ -39,7 +39,8 @@ PLA PolyMaster · impresora Creality Hi Combo · laminado en Creality Print · 2
 
 ```
 index.html          sitio interactivo (un solo archivo, sin dependencias)
-sitio/              plantilla del sitio
+sitio/              plantilla del sitio y modelo 3D empaquetado para el visor
+modelos/            modelos 3D en STL (compresion1.stl: pieza de compresión generativa)
 articulo/           artículo (LaTeX y PDF), tablas generadas, apéndice con las capturas
 poster/             póster A1 (LaTeX y PDF) y código QR
 datos/              resultados.csv (una fila por probeta) y resumen por condición
@@ -58,6 +59,7 @@ python 01_crear_csv.py        # datos/resultados.csv
 python 03_figuras.py          # figuras
 python 05_fig_fuerza_masa.py  # figura de fuerza por gramo
 python 06_articulo_tabla_fig.py
+python 13_modelo3d.py ruta/modelo.stl "Nombre"   # empaqueta un STL para el visor 3D
 python 12_sitio.py            # index.html
 cd ../articulo && latexmk -pdf articulo.tex
 cd ../poster   && latexmk -pdf poster.tex

@@ -115,6 +115,24 @@ svg .bar:hover{opacity:.8}
 .meter i{display:block;height:100%;background:var(--accent);border-radius:6px;transition:width .3s}
 .failtag{display:inline-block;margin-top:6px;padding:4px 10px;border-radius:8px;background:color-mix(in srgb,var(--danger) 16%,transparent);color:var(--danger);font-weight:600;font-size:14px}
 .note{font-size:13px;color:var(--muted);margin-top:10px}
+/* visor 3D */
+.viewer{display:grid;grid-template-columns:1.7fr 1fr;gap:20px;align-items:start}
+.vwrap{position:relative;aspect-ratio:4/3;border-radius:var(--r);overflow:hidden;border:1px solid var(--line);
+  background:radial-gradient(120% 90% at 50% 20%,var(--panel2),var(--bg2))}
+.vwrap canvas{width:100%;height:100%;display:block;touch-action:none;cursor:grab}
+.vwrap canvas:active{cursor:grabbing}
+.hud{position:absolute;left:12px;right:12px;bottom:12px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:space-between}
+.hud .seg{background:color-mix(in srgb,var(--panel) 88%,transparent);backdrop-filter:blur(6px)}
+.hud .seg button{padding:7px 11px;font-size:13px}
+.cut{display:flex;gap:8px;align-items:center;background:color-mix(in srgb,var(--panel) 88%,transparent);backdrop-filter:blur(6px);border:1px solid var(--line);border-radius:12px;padding:6px 12px;font-size:13px;color:var(--muted)}
+.cut input{accent-color:var(--accent);width:120px}
+.vhint{position:absolute;top:10px;left:12px;font-size:12px;color:var(--muted);pointer-events:none}
+.vfail{display:none;padding:40px 20px;text-align:center;color:var(--muted)}
+.specs{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+.specs div{background:var(--panel2);border-radius:10px;padding:10px 12px}
+.specs small{display:block;color:var(--muted);font-size:12px}
+.specs b{font-size:18px}
+@media(max-width:900px){.viewer{grid-template-columns:1fr}}
 /* galeria */
 .gal{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}
 .gal figure{margin:0;background:var(--panel);border:1px solid var(--line);border-radius:12px;overflow:hidden;cursor:zoom-in}
@@ -142,7 +160,7 @@ footer{padding:36px 0;border-top:1px solid var(--line);color:var(--muted);font-s
   <a class="brand" href="#inicio" aria-label="Proyecto FDM, inicio">
     <svg viewBox="0 0 32 32" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linejoin="round"><path d="M16 3l11 6v14l-11 6L5 23V9z"/><path d="M5 9l11 6 11-6M16 15v14"/></svg><span>Proyecto FDM</span></a>
   <ul id="menu">
-    <li><a href="#inicio">Inicio</a></li><li><a href="#proyecto">Proyecto</a></li><li><a href="#metodologia">Metodología</a></li>
+    <li><a href="#inicio">Inicio</a></li><li><a href="#proyecto">Proyecto</a></li><li><a href="#metodologia">Metodología</a></li><li><a href="#modelo3d">Modelo 3D</a></li>
     <li><a href="#resultados">Resultados</a></li><li><a href="#eficiencia">Eficiencia</a></li><li><a href="#galeria">Explora</a></li><li><a class="cta" href="#explorador">Explorador</a></li>
   </ul>
   <button class="icon-btn" id="theme" aria-label="Cambiar tema claro u oscuro" title="Cambiar tema">☾</button>
@@ -157,7 +175,7 @@ footer{padding:36px 0;border-top:1px solid var(--line);color:var(--muted);font-s
       <p class="lead">Estudio experimental de cómo la orientación de impresión, el relleno, las paredes y la altura de capa afectan la fuerza máxima, la deformación y la masa de piezas diseñadas con Fusion 360.</p>
       <div class="btns">
         <a class="btn primary" href="#resultados">▶ Ver resultados interactivos</a>
-        <a class="btn" href="#galeria">Explorar el proceso</a>
+        <a class="btn" href="#modelo3d">⬡ Explorar modelo 3D</a>
         <a class="btn" href="#explorador">Probar el explorador</a>
       </div>
     </div>
@@ -217,6 +235,30 @@ footer{padding:36px 0;border-top:1px solid var(--line);color:var(--muted);font-s
   </div>
   <div class="card" style="margin-top:22px"><h3>Alcance del estudio</h3>
     <p>Estudio exploratorio: una probeta por combinación y carga manual, por lo que los resultados describen tendencias y requieren replicación con ensayos instrumentados y normalizados (ASTM D638, D695 y D790) para establecer significancia.</p></div>
+</div></section>
+
+<section id="modelo3d"><div class="wrap">
+  <h2>Modelo 3D</h2>
+  <p class="sub">Geometría de la pieza de compresión obtenida con el diseño generativo de Fusion 360. Arrastra para girarla, usa la rueda (o pellizca) para acercar y desliza el corte para ver el interior.</p>
+  <div class="viewer">
+    <div class="vwrap" id="vwrap">
+      <canvas id="cv" tabindex="0" aria-label="Visor 3D de la pieza de compresión: arrastra para girar, rueda para acercar"></canvas>
+      <div class="vhint">Arrastra · rueda · doble clic = restablecer</div>
+      <div class="hud">
+        <div class="seg" role="group" aria-label="Vistas" id="vViews">
+          <button data-v="auto" aria-pressed="true">⟳ Giro</button><button data-v="front" aria-pressed="false">Frontal</button><button data-v="top" aria-pressed="false">Superior</button><button data-v="iso" aria-pressed="false">Isométrica</button></div>
+        <label class="cut">Corte <input type="range" id="vCut" min="0" max="100" value="100" aria-label="Plano de corte horizontal"></label>
+      </div>
+      <div class="vfail" id="vfail">Tu navegador no admite WebGL 2. Descarga el modelo con el botón de la derecha.</div>
+    </div>
+    <div class="card" id="vinfo">
+      <h3 id="vName">–</h3>
+      <div class="specs" id="vSpecs"></div>
+      <p>Pieza de compresión generada en Fusion 360: dos placas de apoyo unidas por una estructura orgánica que reparte la carga. En el corte, el interior se muestra en verde.</p>
+      <a class="btn primary" id="vDl" href="#" download>⬇ Descargar STL</a>
+      <p class="note">Se puede abrir en cualquier laminador (Creality Print, Cura) o visor 3D.</p>
+    </div>
+  </div>
 </div></section>
 
 <section id="resultados"><div class="wrap">
@@ -349,6 +391,7 @@ footer{padding:36px 0;border-top:1px solid var(--line);color:var(--muted);font-s
 
 <script>
 const DATA = /*DATA*/[];
+const MODELOS = /*MODELOS*/[];
 const CFG = {Fina:{n:"Fina",c:"var(--fina)"},Estandar:{n:"Estándar",c:"var(--est)"},Fuerte:{n:"Fuerte",c:"var(--fuerte)"}};
 const ORI = {V90:{n:"Vertical (90°)",s:"90°",a:90},D45:{n:"Inclinada (45°)",s:"45°",a:45},H0:{n:"Horizontal (0°)",s:"0°",a:0}};
 const ORDER = ["V90","D45","H0"];
@@ -481,7 +524,7 @@ function explorer(){
 /* menu activo */
 const links=$$("#menu a");
 const io=new IntersectionObserver(es=>es.forEach(en=>{if(en.isIntersecting){links.forEach(a=>a.classList.toggle("active",a.getAttribute("href")==="#"+en.target.id))}}),{rootMargin:"-45% 0px -50% 0px"});
-["inicio","proyecto","metodologia","resultados","eficiencia","tiempo","galeria","explorador","comparador","conclusion","referencias"].forEach(id=>{const el=document.getElementById(id);if(el)io.observe(el)});
+["inicio","proyecto","metodologia","modelo3d","resultados","eficiencia","tiempo","galeria","explorador","comparador","conclusion","referencias"].forEach(id=>{const el=document.getElementById(id);if(el)io.observe(el)});
 
 /* dispersion fuerza vs masa */
 const SC={e:"T"};
@@ -534,6 +577,89 @@ function comparar(){
 
 /* ampliar cualquier imagen con clase zoom */
 document.addEventListener("click",e=>{const i=e.target.closest("img.zoom");if(!i)return;$("#dlgimg").src=i.src;$("#dlgimg").alt=i.alt;$("#dlg").showModal()});
+
+/* ===== visor 3D (WebGL2 propio, sin librerias) ===== */
+const V3={sub:(a,b)=>[a[0]-b[0],a[1]-b[1],a[2]-b[2]],dot:(a,b)=>a[0]*b[0]+a[1]*b[1]+a[2]*b[2],
+  cross:(a,b)=>[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]],norm:a=>{const l=Math.hypot(...a)||1;return[a[0]/l,a[1]/l,a[2]/l]}};
+const persp=(f,a,n,fa)=>{const t=1/Math.tan(f/2);return[t/a,0,0,0,0,t,0,0,0,0,(fa+n)/(n-fa),-1,0,0,2*fa*n/(n-fa),0]};
+const lookAt=(e,c,u)=>{const z=V3.norm(V3.sub(e,c)),x=V3.norm(V3.cross(u,z)),y=V3.cross(z,x);
+  return[x[0],y[0],z[0],0,x[1],y[1],z[1],0,x[2],y[2],z[2],0,-V3.dot(x,e),-V3.dot(y,e),-V3.dot(z,e),1]};
+function decodeModel(m){
+  const bin=atob(m.b64),u8=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)u8[i]=bin.charCodeAt(i);
+  const dv=new DataView(u8.buffer),lo=[0,1,2].map(i=>dv.getFloat32(4*i,true)),hi=[3,4,5].map(i=>dv.getFloat32(4*i,true));
+  const nv=dv.getUint32(24,true),nt=dv.getUint32(28,true),pad=n=>n+((4-n%4)%4);
+  let off=32;const q=new Uint16Array(u8.buffer.slice(off,off+nv*6));off+=pad(nv*6);
+  const idx=new Uint16Array(u8.buffer.slice(off,off+nt*6));
+  const c=lo.map((l,i)=>(l+hi[i])/2),s=2/Math.max(hi[0]-lo[0],hi[1]-lo[1],hi[2]-lo[2]),pos=new Float32Array(nv*3);
+  for(let i=0;i<nv;i++)for(let k=0;k<3;k++)pos[3*i+k]=((lo[k]+q[3*i+k]/65535*(hi[k]-lo[k]))-c[k])*s;
+  return{pos,idx,zmin:(lo[2]-c[2])*s,zmax:(hi[2]-c[2])*s};
+}
+function startViewer(){
+  const sec=$("#modelo3d"),canvas=$("#cv"),m=MODELOS[0];
+  if(!m){sec.style.display="none";return;}
+  $("#vName").textContent=m.name;$("#vDl").href=m.file;
+  $("#vSpecs").innerHTML=[["Dimensiones",m.dims.map(d=>fmt(d,0)).join(" × ")+" mm"],["Triángulos",m.tris.toLocaleString("es-CO")],["Volumen del sólido",fmt(m.vol_cm3,1)+" cm³"],["Archivo STL",fmt(m.mb,1)+" MB"]]
+    .map(([a,b])=>`<div><small>${a}</small><b>${b}</b></div>`).join("");
+  const gl=canvas.getContext("webgl2",{antialias:true,alpha:true});
+  if(!gl){canvas.style.display="none";$("#vfail").style.display="block";return;}
+  const mesh=decodeModel(m);
+  const vs=`#version 300 es
+in vec3 aP;uniform mat4 uV,uP;out vec3 vPv;out float vZ;
+void main(){vec4 p=uV*vec4(aP,1.0);vPv=p.xyz;vZ=aP.z;gl_Position=uP*p;}`;
+  const fs=`#version 300 es
+precision highp float;in vec3 vPv;in float vZ;uniform float uCut;uniform vec3 uBase,uAcc;out vec4 o;
+void main(){if(vZ>uCut)discard;
+ vec3 N=normalize(cross(dFdx(vPv),dFdy(vPv)));vec3 V=normalize(-vPv);
+ vec3 L1=normalize(vec3(.45,.75,.6)),L2=normalize(vec3(-.7,.15,.5));
+ float d1=max(dot(N,L1),0.),d2=max(dot(N,L2),0.),h=.5+.5*N.y;
+ vec3 base=gl_FrontFacing?uBase:uAcc;
+ vec3 c=base*(.26+.58*d1+.24*d2+.16*h)+pow(max(dot(reflect(-L1,N),V),0.),40.)*.22;
+ float rim=pow(1.-max(dot(N,V),0.),3.);c+=uAcc*rim*.22;o=vec4(c,1.);}`;
+  const sh=(t,s)=>{const x=gl.createShader(t);gl.shaderSource(x,s);gl.compileShader(x);if(!gl.getShaderParameter(x,gl.COMPILE_STATUS))console.error(gl.getShaderInfoLog(x));return x};
+  const pr=gl.createProgram();gl.attachShader(pr,sh(gl.VERTEX_SHADER,vs));gl.attachShader(pr,sh(gl.FRAGMENT_SHADER,fs));gl.linkProgram(pr);gl.useProgram(pr);
+  const vao=gl.createVertexArray();gl.bindVertexArray(vao);
+  const vb=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,vb);gl.bufferData(gl.ARRAY_BUFFER,mesh.pos,gl.STATIC_DRAW);
+  const loc=gl.getAttribLocation(pr,"aP");gl.enableVertexAttribArray(loc);gl.vertexAttribPointer(loc,3,gl.FLOAT,false,0,0);
+  const ib=gl.createBuffer();gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,ib);gl.bufferData(gl.ELEMENT_ARRAY_BUFFER,mesh.idx,gl.STATIC_DRAW);
+  const U=n=>gl.getUniformLocation(pr,n);
+  gl.enable(gl.DEPTH_TEST);
+  const st={yaw:.8,pitch:.45,dist:4.0,auto:!matchMedia("(prefers-reduced-motion: reduce)").matches,cut:100,dirty:true,vis:true};
+  const hex=h=>{h=h.trim().replace("#","");return[0,2,4].map(i=>parseInt(h.substr(i,2),16)/255)};
+  function render(){
+    const dpr=Math.min(devicePixelRatio||1,2),w=Math.max(1,Math.round(canvas.clientWidth*dpr)),h=Math.max(1,Math.round(canvas.clientHeight*dpr));
+    if(canvas.width!==w||canvas.height!==h){canvas.width=w;canvas.height=h}
+    gl.viewport(0,0,w,h);gl.clearColor(0,0,0,0);gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);
+    const e=[st.dist*Math.cos(st.pitch)*Math.cos(st.yaw),st.dist*Math.cos(st.pitch)*Math.sin(st.yaw),st.dist*Math.sin(st.pitch)];
+    gl.uniformMatrix4fv(U("uV"),false,lookAt(e,[0,0,0],[0,0,1]));gl.uniformMatrix4fv(U("uP"),false,persp(.75,w/h,.1,50));
+    gl.uniform1f(U("uCut"),st.cut>=100?9:mesh.zmin+(mesh.zmax-mesh.zmin)*st.cut/100+1e-4);
+    const light=document.documentElement.dataset.theme==="light";
+    gl.uniform3fv(U("uBase"),light?[.74,.78,.76]:[.9,.92,.91]);
+    gl.uniform3fv(U("uAcc"),hex(getComputedStyle(document.documentElement).getPropertyValue("--accent")));
+    gl.drawElements(gl.TRIANGLES,mesh.idx.length,gl.UNSIGNED_SHORT,0);
+  }
+  function loop(){if(st.vis&&(st.auto||st.dirty)){if(st.auto)st.yaw+=.006;render();st.dirty=false}requestAnimationFrame(loop)}
+  loop();
+  new IntersectionObserver(es=>{st.vis=es[0].isIntersecting;st.dirty=true}).observe(canvas);
+  new ResizeObserver(()=>{st.dirty=true}).observe(canvas);
+  new MutationObserver(()=>{st.dirty=true}).observe(document.documentElement,{attributes:true});
+  const press=v=>[...$("#vViews").children].forEach(b=>b.setAttribute("aria-pressed",b.dataset.v===v));
+  const stop=()=>{if(st.auto){st.auto=false;press("")}};
+  const pts=new Map();let pd=0;
+  canvas.addEventListener("pointerdown",e=>{canvas.setPointerCapture(e.pointerId);pts.set(e.pointerId,[e.clientX,e.clientY]);if(pts.size===2){const[a,b]=[...pts.values()];pd=Math.hypot(a[0]-b[0],a[1]-b[1])}stop()});
+  canvas.addEventListener("pointermove",e=>{if(!pts.has(e.pointerId))return;const p=pts.get(e.pointerId);
+    if(pts.size===1){st.yaw-=(e.clientX-p[0])*.01;st.pitch=Math.max(-1.55,Math.min(1.55,st.pitch+(e.clientY-p[1])*.01))}
+    pts.set(e.pointerId,[e.clientX,e.clientY]);
+    if(pts.size===2){const[a,b]=[...pts.values()],d=Math.hypot(a[0]-b[0],a[1]-b[1]);if(pd)st.dist=Math.max(1.8,Math.min(8,st.dist*pd/d));pd=d}
+    st.dirty=true});
+  ["pointerup","pointercancel"].forEach(t=>canvas.addEventListener(t,e=>{pts.delete(e.pointerId);pd=0}));
+  canvas.addEventListener("wheel",e=>{e.preventDefault();st.dist=Math.max(1.8,Math.min(8,st.dist*Math.exp(e.deltaY*.0015)));st.dirty=true},{passive:false});
+  const reset=()=>{Object.assign(st,{yaw:.8,pitch:.45,dist:4.0,cut:100,dirty:true});$("#vCut").value=100};
+  canvas.addEventListener("dblclick",()=>{reset();stop()});
+  canvas.addEventListener("keydown",e=>{const k={ArrowLeft:[.1,0],ArrowRight:[-.1,0],ArrowUp:[0,.1],ArrowDown:[0,-.1]}[e.key];if(k){e.preventDefault();stop();st.yaw+=k[0];st.pitch=Math.max(-1.55,Math.min(1.55,st.pitch+k[1]));st.dirty=true}});
+  seg("#vViews",v=>{if(v==="auto"){st.auto=true}else{st.auto=false;const V={front:[-Math.PI/2,0],top:[-Math.PI/2,1.5],iso:[.8,.45]}[v];st.yaw=V[0];st.pitch=V[1]}st.dirty=true});
+  $("#vCut").addEventListener("input",e=>{st.cut=+e.target.value;st.dirty=true});
+}
+try{startViewer()}catch(err){console.error(err);const f=$("#vfail");if(f){f.style.display="block";f.textContent="No se pudo iniciar el visor 3D. Descarga el modelo con el botón de la derecha."}}
 
 findings();draw();explorer();scatter();timeBars();comparar();
 </script>
