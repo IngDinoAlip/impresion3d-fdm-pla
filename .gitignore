@@ -1,0 +1,15 @@
+# auxiliares de LaTeX
+*.aux
+*.log
+*.fls
+*.fdb_latexmk
+*.out
+*.toc
+*.synctex.gz
+*.bbl
+*.blg
+*.bcf
+*.run.xml
+# imagenes originales sin comprimir (ya estan en articulo/anexo/)
+fotos_extraidas/
+__pycache__/
