@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Proyecto FDM · PLA y diseño generativo</title>
-<meta name="description" content="Explorador interactivo del estudio experimental: orientación y configuración FDM en piezas de PLA con diseño generativo (Fusion 360).">
+<meta name="description" content="Laboratorio interactivo del estudio experimental: orientación y configuración FDM en piezas de PLA con diseño generativo (Fusion 360).">
 <style>
 :root{
   --bg:#0b1210; --bg2:#0f1a16; --panel:#121e19; --panel2:#17261f; --line:#24382e;
@@ -21,10 +21,10 @@
 *{box-sizing:border-box}
 html{scroll-behavior:smooth;scroll-padding-top:76px}
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{animation:none!important;transition:none!important}}
-body{margin:0;background:var(--bg);color:var(--text);font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;-webkit-font-smoothing:antialiased}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
 a{color:var(--accent)}
 img{max-width:100%;display:block}
-.wrap{max-width:1180px;margin:0 auto;padding:0 20px}
+.wrap{max-width:1240px;margin:0 auto;padding:0 20px}
 /* nav */
 header.nav{position:sticky;top:0;z-index:50;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
 .nav .wrap{display:flex;align-items:center;gap:18px;height:64px}
@@ -35,13 +35,11 @@ header.nav{position:sticky;top:0;z-index:50;background:color-mix(in srgb,var(--b
 .nav li a:hover{color:var(--text);background:var(--panel)}
 .nav li a.active{color:var(--text);background:var(--panel2);box-shadow:inset 0 -2px 0 var(--accent)}
 .nav li a.cta{background:var(--accent);color:var(--accent-ink);font-weight:600}
-.icon-btn{border:1px solid var(--line);background:var(--panel);color:var(--text);width:38px;height:38px;border-radius:50%;cursor:pointer;font-size:17px}
-.icon-btn:focus-visible,.btn:focus-visible,select:focus-visible,button:focus-visible,a:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.icon-btn{border:1px solid var(--line);background:var(--panel);color:var(--text);width:38px;height:38px;border-radius:50%;cursor:pointer;font-size:17px;flex:none}
+.icon-btn:focus-visible,.btn:focus-visible,select:focus-visible,button:focus-visible,a:focus-visible,summary:focus-visible,canvas:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 /* hero */
-.hero{position:relative;overflow:hidden;padding:56px 0 40px;background:
-  radial-gradient(900px 400px at 85% 10%,color-mix(in srgb,var(--accent) 22%,transparent),transparent 70%),var(--bg)}
-.hero .wrap{display:grid;grid-template-columns:1.1fr .9fr;gap:34px;align-items:center}
-.hero .wrap.quickwrap{display:block}
+.hero{position:relative;overflow:hidden;padding:56px 0 40px;background:radial-gradient(900px 400px at 85% 10%,color-mix(in srgb,var(--accent) 22%,transparent),transparent 70%),var(--bg)}
+.hero .wrap.hgrid{display:grid;grid-template-columns:1.1fr .9fr;gap:34px;align-items:center}
 .tag{display:inline-block;padding:4px 12px;border-radius:8px;background:color-mix(in srgb,var(--accent) 18%,transparent);color:var(--accent);font-size:14px;font-weight:600}
 h1{font-size:clamp(30px,4.4vw,50px);line-height:1.1;margin:16px 0 14px;letter-spacing:-.02em}
 h1 em{font-style:normal;color:var(--accent)}
@@ -50,28 +48,26 @@ h1 em{font-style:normal;color:var(--accent)}
 .btn{display:inline-flex;align-items:center;gap:8px;padding:12px 20px;border-radius:12px;border:1px solid var(--line);background:transparent;color:var(--text);font:600 15px inherit;cursor:pointer;text-decoration:none}
 .btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
 .btn:hover{filter:brightness(1.08)}
-.hero-visual{position:relative}
 .hero-visual img{border-radius:var(--r);border:1px solid var(--line);box-shadow:var(--shadow);aspect-ratio:3/2;object-fit:cover;width:100%}
 .chips{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%;margin-top:14px}
-.chip{background:color-mix(in srgb,var(--panel) 92%,transparent);backdrop-filter:blur(8px);border:1px solid var(--line);border-radius:12px;padding:9px 12px;font-size:13px;box-shadow:var(--shadow)}
+.chip{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:9px 12px;font-size:13px}
 .chip b{display:block;font-size:14px}
 .chip span{color:var(--muted)}
-/* tarjetas rapidas */
-.quick{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:56px}
+.quick{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:48px}
 .qcard{display:block;text-decoration:none;color:var(--text);background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:18px;transition:transform .15s,border-color .15s}
 .qcard:hover{transform:translateY(-3px);border-color:var(--accent)}
 .qcard .num{font-size:30px;font-weight:800;color:var(--accent);letter-spacing:-.02em}
 .qcard h3{margin:2px 0 4px;font-size:16px}
 .qcard p{margin:0;color:var(--muted);font-size:14px}
 /* secciones */
-section{padding:64px 0;border-top:1px solid var(--line)}
+section{padding:60px 0;border-top:1px solid var(--line)}
 section:nth-of-type(even){background:var(--bg2)}
 h2{font-size:clamp(24px,3vw,34px);margin:0 0 6px;letter-spacing:-.01em}
-.sub{color:var(--muted);margin:0 0 28px;max-width:70ch}
+.sub{color:var(--muted);margin:0 0 24px;max-width:72ch}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:22px}
 .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
-.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:20px}
-.card h3{margin:0 0 8px;font-size:18px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:18px}
+.card h3{margin:0 0 8px;font-size:17px}
 .card p{margin:0 0 8px;color:var(--muted)}
 .question{border-left:4px solid var(--accent2);background:color-mix(in srgb,var(--accent2) 10%,var(--panel));padding:16px 18px;border-radius:0 var(--r) var(--r) 0;font-size:18px}
 .flow{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:20px 0}
@@ -79,65 +75,70 @@ h2{font-size:clamp(24px,3vw,34px);margin:0 0 6px;letter-spacing:-.01em}
 .flow .arrow{color:var(--accent);font-size:20px}
 table{width:100%;border-collapse:collapse;font-size:14px}
 th,td{padding:9px 10px;text-align:left;border-bottom:1px solid var(--line)}
-th{color:var(--muted);font-weight:600;cursor:default;position:sticky;top:0;background:var(--panel)}
+th{color:var(--muted);font-weight:600;position:sticky;top:0;background:var(--panel)}
 th[data-k]{cursor:pointer}
 th[data-k]:hover{color:var(--accent)}
 td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
-.tablewrap{max-height:420px;overflow:auto;border:1px solid var(--line);border-radius:12px}
+tr.row{cursor:pointer}
+tr.row:hover td{background:var(--panel2)}
+tr.sel td{background:color-mix(in srgb,var(--accent) 16%,transparent)}
+.tablewrap{max-height:460px;overflow:auto;border:1px solid var(--line);border-radius:12px}
 .dot{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px}
 /* controles */
-.controls{display:flex;flex-wrap:wrap;gap:14px;margin-bottom:18px;align-items:end}
-.seg{display:inline-flex;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:3px}
+.controls{display:flex;flex-wrap:wrap;gap:14px;margin-bottom:16px;align-items:end}
+.seg{display:inline-flex;flex-wrap:wrap;max-width:100%;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:3px}
 .seg button{border:0;background:transparent;color:var(--muted);padding:8px 14px;border-radius:9px;cursor:pointer;font:600 14px inherit}
 .seg button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink)}
 label.sel{display:grid;gap:4px;font-size:13px;color:var(--muted)}
-select{background:var(--panel);color:var(--text);border:1px solid var(--line);border-radius:10px;padding:9px 12px;font:500 15px inherit;min-width:150px}
-/* grafico */
-.chartbox{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:16px;position:relative}
+select{background:var(--panel);color:var(--text);border:1px solid var(--line);border-radius:10px;padding:9px 12px;font:500 15px inherit;min-width:140px}
+.note{font-size:13px;color:var(--muted);margin-top:10px}
+/* laboratorio */
+.findings{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
+.find{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px}
+.find .big{font-size:26px;font-weight:800;color:var(--accent);letter-spacing:-.02em}
+.find p{margin:2px 0 0;color:var(--muted);font-size:13px}
+.ctrlbar{display:flex;flex-wrap:wrap;gap:12px 22px;align-items:center;padding:12px 14px;background:var(--panel);border:1px solid var(--line);border-radius:var(--r);margin-bottom:18px}
+.ctrlbar b{font-size:13px;color:var(--muted);margin-right:8px;font-weight:600}
+.lab{display:grid;grid-template-columns:minmax(330px,.85fr) 1.35fr;gap:20px;align-items:start}
+.labL{position:sticky;top:76px;display:grid;gap:14px}
+.vwrap{position:relative;aspect-ratio:1/1;border-radius:var(--r);overflow:hidden;border:1px solid var(--line);background:radial-gradient(120% 90% at 50% 20%,var(--panel2),var(--bg2))}
+.vwrap canvas{width:100%;height:100%;display:block;touch-action:none;cursor:grab}
+.vwrap canvas:active{cursor:grabbing}
+.vname{position:absolute;top:10px;left:12px;font-weight:700;font-size:14px;background:color-mix(in srgb,var(--panel) 85%,transparent);border:1px solid var(--line);border-radius:10px;padding:3px 10px}
+.vcount{position:absolute;top:10px;right:12px;font-size:13px;background:color-mix(in srgb,var(--panel) 85%,transparent);border:1px solid var(--line);border-radius:10px;padding:3px 10px}
+.arrow3d{position:absolute;top:50%;transform:translateY(-50%);width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:color-mix(in srgb,var(--panel) 85%,transparent);color:var(--text);font-size:22px;line-height:1;cursor:pointer}
+.arrow3d:hover{background:var(--accent);color:var(--accent-ink)}
+.arrow3d.prev{left:8px}.arrow3d.next{right:8px}
+.hud{position:absolute;left:10px;right:10px;bottom:10px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:space-between}
+.hud .seg{background:color-mix(in srgb,var(--panel) 88%,transparent)}
+.hud .seg button{padding:6px 9px;font-size:12px}
+.cut{display:flex;gap:6px;align-items:center;background:color-mix(in srgb,var(--panel) 88%,transparent);border:1px solid var(--line);border-radius:12px;padding:5px 10px;font-size:12px;color:var(--muted)}
+.cut input{accent-color:var(--accent);width:80px}
+.vfail{display:none;padding:40px 20px;text-align:center;color:var(--muted)}
+.vmeta{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap;font-size:13px;color:var(--muted);margin-top:-6px}
+.vmeta a{font-weight:600}
+.cond{display:grid;gap:8px}
+.cfgbtn{display:grid;grid-template-columns:auto 1fr;gap:2px 10px;align-items:center;text-align:left;background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:8px 12px;color:var(--text);cursor:pointer;font:inherit}
+.cfgbtn small{grid-column:2;color:var(--muted);font-size:12px}
+.cfgbtn[aria-pressed="true"]{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 12%,var(--panel2))}
+.orients{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.obtn{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:4px 4px 8px;color:var(--text);cursor:pointer;font:600 12px inherit;text-align:center}
+.obtn[aria-pressed="true"]{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 12%,var(--panel2))}
+.kpis{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:8px}
+.kpi{background:var(--panel2);border-radius:12px;padding:10px 12px}
+.kpi small{color:var(--muted);display:block;font-size:12px}
+.kpi b{font-size:22px;letter-spacing:-.02em}
+.meter{height:7px;background:var(--line);border-radius:6px;overflow:hidden;margin-top:6px}
+.meter i{display:block;height:100%;background:var(--accent);border-radius:6px;transition:width .3s}
+.failtag{display:inline-block;padding:4px 10px;border-radius:8px;background:color-mix(in srgb,var(--danger) 16%,transparent);color:var(--danger);font-weight:600;font-size:13px;margin:2px 4px 2px 0}
+.chartbox{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:14px}
 svg text{fill:var(--muted);font:12px system-ui,sans-serif}
 svg .axis{stroke:var(--line)}
-svg .bar{transition:opacity .15s}
+svg .bar{transition:opacity .15s;cursor:pointer}
 svg .bar:hover{opacity:.8}
 .legend{display:flex;gap:16px;flex-wrap:wrap;margin-top:10px;font-size:14px;color:var(--muted)}
 #tip{position:fixed;pointer-events:none;background:#000d;color:#fff;padding:8px 10px;border-radius:8px;font-size:13px;z-index:99;display:none;max-width:240px}
-.findings{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:22px}
-.find{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:16px}
-.find .big{font-size:30px;font-weight:800;color:var(--accent);letter-spacing:-.02em}
-.find p{margin:4px 0 0;color:var(--muted);font-size:14px}
-/* explorador */
-.explorer{display:grid;grid-template-columns:.9fr 1.1fr;gap:22px;align-items:start}
-.ocard{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:18px}
-.kpis{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:10px}
-.kpi{background:var(--panel2);border-radius:12px;padding:12px 14px}
-.kpi small{color:var(--muted);display:block}
-.kpi b{font-size:26px;letter-spacing:-.02em}
-.meter{height:8px;background:var(--line);border-radius:6px;overflow:hidden;margin-top:6px}
-.meter i{display:block;height:100%;background:var(--accent);border-radius:6px;transition:width .3s}
-.failtag{display:inline-block;margin-top:6px;padding:4px 10px;border-radius:8px;background:color-mix(in srgb,var(--danger) 16%,transparent);color:var(--danger);font-weight:600;font-size:14px}
-.note{font-size:13px;color:var(--muted);margin-top:10px}
-/* visor 3D */
-.viewer{display:grid;grid-template-columns:1.7fr 1fr;gap:20px;align-items:start}
-.vwrap{position:relative;aspect-ratio:4/3;border-radius:var(--r);overflow:hidden;border:1px solid var(--line);
-  background:radial-gradient(120% 90% at 50% 20%,var(--panel2),var(--bg2))}
-.vwrap canvas{width:100%;height:100%;display:block;touch-action:none;cursor:grab}
-.vwrap canvas:active{cursor:grabbing}
-.hud{position:absolute;left:12px;right:12px;bottom:12px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:space-between}
-.hud .seg{background:color-mix(in srgb,var(--panel) 88%,transparent);backdrop-filter:blur(6px)}
-.hud .seg button{padding:7px 11px;font-size:13px}
-.cut{display:flex;gap:8px;align-items:center;background:color-mix(in srgb,var(--panel) 88%,transparent);backdrop-filter:blur(6px);border:1px solid var(--line);border-radius:12px;padding:6px 12px;font-size:13px;color:var(--muted)}
-.cut input{accent-color:var(--accent);width:120px}
-.seg{flex-wrap:wrap;max-width:100%}
-.arrow3d{position:absolute;top:50%;transform:translateY(-50%);width:42px;height:42px;border-radius:50%;border:1px solid var(--line);background:color-mix(in srgb,var(--panel) 85%,transparent);color:var(--text);font-size:24px;line-height:1;cursor:pointer;backdrop-filter:blur(6px)}
-.arrow3d:hover{background:var(--accent);color:var(--accent-ink)}
-.arrow3d.prev{left:10px}.arrow3d.next{right:10px}
-.vcount{position:absolute;top:10px;right:12px;font-size:13px;color:var(--text);background:color-mix(in srgb,var(--panel) 85%,transparent);border:1px solid var(--line);border-radius:10px;padding:3px 10px}
-.vhint{position:absolute;top:10px;left:12px;font-size:12px;color:var(--muted);pointer-events:none}
-.vfail{display:none;padding:40px 20px;text-align:center;color:var(--muted)}
-.specs{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
-.specs div{background:var(--panel2);border-radius:10px;padding:10px 12px}
-.specs small{display:block;color:var(--muted);font-size:12px}
-.specs b{font-size:18px}
-@media(max-width:900px){.viewer{grid-template-columns:1fr}}
+.tabs{margin-bottom:14px}
 /* galeria */
 .gal{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}
 .gal figure{margin:0;background:var(--panel);border:1px solid var(--line);border-radius:12px;overflow:hidden;cursor:zoom-in}
@@ -149,12 +150,15 @@ dialog img{max-height:80vh;margin:auto}
 footer{padding:36px 0;border-top:1px solid var(--line);color:var(--muted);font-size:14px}
 .reflist a{display:block;padding:8px 0;border-bottom:1px solid var(--line);text-decoration:none;color:var(--text)}
 .reflist a small{display:block;color:var(--muted)}
+.tscroll{overflow-x:auto}
+@media(max-width:1000px){
+  .lab{grid-template-columns:1fr}
+  .labL{position:static}
+}
 @media(max-width:900px){
-  .hero .wrap,.grid2,.explorer{grid-template-columns:1fr}
+  .hero .wrap.hgrid,.grid2{grid-template-columns:1fr}
   .quick,.findings{grid-template-columns:repeat(2,1fr)}
   .grid3{grid-template-columns:1fr}
-  .chips{position:static;width:100%;margin-top:12px}
-  .nav .wrap{gap:8px}
   .brand span{display:none}
 }
 @media(max-width:520px){.quick,.findings{grid-template-columns:1fr}}
@@ -165,23 +169,23 @@ footer{padding:36px 0;border-top:1px solid var(--line);color:var(--muted);font-s
   <a class="brand" href="#inicio" aria-label="Proyecto FDM, inicio">
     <svg viewBox="0 0 32 32" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linejoin="round"><path d="M16 3l11 6v14l-11 6L5 23V9z"/><path d="M5 9l11 6 11-6M16 15v14"/></svg><span>Proyecto FDM</span></a>
   <ul id="menu">
-    <li><a href="#inicio">Inicio</a></li><li><a href="#proyecto">Proyecto</a></li><li><a href="#metodologia">Metodología</a></li><li><a href="#modelo3d">Modelo 3D</a></li>
-    <li><a href="#resultados">Resultados</a></li><li><a href="#eficiencia">Eficiencia</a></li><li><a href="#galeria">Explora</a></li><li><a class="cta" href="#explorador">Explorador</a></li>
+    <li><a href="#inicio">Inicio</a></li><li><a href="#proyecto">Proyecto</a></li><li><a href="#laboratorio">Laboratorio</a></li>
+    <li><a href="#proceso">Proceso</a></li><li><a href="#cierre">Conclusión</a></li>
   </ul>
   <button class="icon-btn" id="theme" aria-label="Cambiar tema claro u oscuro" title="Cambiar tema">☾</button>
 </div></header>
 
 <main>
 <section id="inicio" class="hero" style="border-top:0">
-  <div class="wrap">
+  <div class="wrap hgrid">
     <div>
       <span class="tag">Manufactura aditiva</span>
       <h1>Orientación y configuración <em>FDM</em>: comportamiento mecánico de piezas de PLA con <em>diseño generativo</em></h1>
       <p class="lead">Estudio experimental de cómo la orientación de impresión, el relleno, las paredes y la altura de capa afectan la fuerza máxima, la deformación y la masa de piezas diseñadas con Fusion 360.</p>
       <div class="btns">
-        <a class="btn primary" href="#resultados">▶ Ver resultados interactivos</a>
-        <a class="btn" href="#modelo3d">⬡ Explorar modelo 3D</a>
-        <a class="btn" href="#explorador">Probar el explorador</a>
+        <a class="btn primary" href="#laboratorio">▶ Abrir el laboratorio</a>
+        <a class="btn" href="#laboratorio">⬡ Ver modelos 3D</a>
+        <a class="btn" href="#proceso">Galería del proceso</a>
       </div>
     </div>
     <div class="hero-visual">
@@ -194,12 +198,12 @@ footer{padding:36px 0;border-top:1px solid var(--line);color:var(--muted);font-s
       </div>
     </div>
   </div>
-  <div class="wrap quickwrap">
+  <div class="wrap">
     <div class="quick">
-      <a class="qcard" href="#proyecto"><div class="num">6</div><h3>Geometrías evaluadas</h3><p>G1 y G2 (dos alternativas generativas) para cada ensayo.</p></a>
-      <a class="qcard" href="#metodologia"><div class="num">3</div><h3>Configuraciones</h3><p>Fina, Estándar y Fuerte, en 0°, 45° y 90°.</p></a>
-      <a class="qcard" href="#metodologia"><div class="num">54</div><h3>Probetas ensayadas</h3><p>Tensión, compresión y flexión.</p></a>
-      <a class="qcard" href="#resultados"><div class="num" id="heroDelta">+64–70 %</div><h3>Fuerza de Fuerte vs Fina</h3><p>Con más masa: ver eficiencia por gramo.</p></a>
+      <a class="qcard" href="#laboratorio"><div class="num">6</div><h3>Geometrías evaluadas</h3><p>G1 y G2 (dos alternativas generativas) para cada ensayo.</p></a>
+      <a class="qcard" href="#proyecto"><div class="num">3</div><h3>Configuraciones</h3><p>Fina, Estándar y Fuerte, en 0°, 45° y 90°.</p></a>
+      <a class="qcard" href="#laboratorio"><div class="num">54</div><h3>Probetas ensayadas</h3><p>Tensión, compresión y flexión.</p></a>
+      <a class="qcard" href="#laboratorio"><div class="num" id="heroDelta">+64–70 %</div><h3>Fuerza de Fuerte vs Fina</h3><p>Con más masa: ver eficiencia por gramo.</p></a>
     </div>
   </div>
 </section>
@@ -218,174 +222,108 @@ footer{padding:36px 0;border-top:1px solid var(--line);color:var(--muted);font-s
     <div class="card"><h3>Fabricación</h3><p>PLA PolyMaster en una Creality Hi Combo; laminado en Creality Print a 215 °C de boquilla y 60 °C de cama.</p></div>
     <div class="card"><h3>Ensayos</h3><p>Carga manual progresiva hasta la falla con celda de carga: axial, vertical y central en viga apoyada.</p></div>
   </div>
+  <div class="card" style="margin-top:16px"><h3>Diseño y alcance</h3>
+    <p>Tres configuraciones <i>combinadas</i> × tres orientaciones × dos geometrías × tres ensayos = 54 probetas, una por condición. Como cada configuración cambia varios parámetros a la vez, los resultados comparan configuraciones completas; no permiten atribuir el efecto al relleno, las paredes o el patrón por separado. Es un estudio exploratorio: las tendencias requieren replicación con ensayos normalizados (ASTM D638, D695 y D790). Las configuraciones y orientaciones se eligen en el laboratorio.</p></div>
 </div></section>
 
-<section id="metodologia"><div class="wrap">
-  <h2>Metodología</h2>
-  <p class="sub">Tres configuraciones <i>combinadas</i> (no factores independientes) × tres orientaciones × dos geometrías × tres ensayos = 54 probetas, una por condición.</p>
-  <div class="grid2">
-    <div class="card"><h3>Configuraciones de impresión</h3>
-      <table><thead><tr><th>Configuración</th><th class="num">Relleno</th><th class="num">Paredes</th><th class="num">Capa</th><th>Patrón</th></tr></thead>
-      <tbody>
-        <tr><td><span class="dot" style="background:var(--fina)"></span>Fina</td><td class="num">15 %</td><td class="num">2</td><td class="num">0,12 mm</td><td>Cúbico</td></tr>
-        <tr><td><span class="dot" style="background:var(--est)"></span>Estándar</td><td class="num">15 %</td><td class="num">2</td><td class="num">0,20 mm</td><td>Cúbico</td></tr>
-        <tr><td><span class="dot" style="background:var(--fuerte)"></span>Fuerte</td><td class="num">25 %</td><td class="num">5</td><td class="num">0,20 mm</td><td>Giroide</td></tr>
-      </tbody></table>
-      <p class="note">Como cada configuración cambia varios parámetros a la vez, los resultados comparan configuraciones completas; no permiten atribuir el efecto al relleno, las paredes o el patrón por separado.</p>
-    </div>
-    <div class="card"><h3>Orientación de las capas</h3>
-      <p>El ángulo es el del eje de la pieza respecto de la cama. Las líneas azules son capas; las flechas, la carga.</p>
-      <div id="orients" style="display:flex;gap:6px;justify-content:space-around;flex-wrap:wrap"></div>
-    </div>
-  </div>
-  <div class="card" style="margin-top:22px"><h3>Alcance del estudio</h3>
-    <p>Estudio exploratorio: una probeta por combinación y carga manual, por lo que los resultados describen tendencias y requieren replicación con ensayos instrumentados y normalizados (ASTM D638, D695 y D790) para establecer significancia.</p></div>
-</div></section>
-
-<section id="modelo3d"><div class="wrap">
-  <h2>Modelo 3D</h2>
-  <p class="sub">Las seis geometrías (G1 y G2 de tensión, compresión y flexión) obtenidas con el diseño generativo de Fusion 360. Elige una y arrastra para girarla, usa la rueda (o pellizca) para acercar y desliza el corte para ver el interior.</p>
-  <div class="controls"><div class="seg" role="group" aria-label="Modelo 3D" id="vModels"></div></div>
-  <div class="viewer">
-    <div class="vwrap" id="vwrap">
-      <canvas id="cv" tabindex="0" aria-label="Visor 3D de la pieza de compresión: arrastra para girar, rueda para acercar"></canvas>
-      <div class="vhint">Arrastra · rueda · doble clic = restablecer</div>
-      <div class="vcount" id="vCount" aria-live="polite">1 / 1</div>
-      <button class="arrow3d prev" id="vPrev" aria-label="Modelo anterior" title="Modelo anterior">‹</button>
-      <button class="arrow3d next" id="vNext" aria-label="Modelo siguiente" title="Modelo siguiente">›</button>
-      <div class="hud">
-        <div class="seg" role="group" aria-label="Vistas" id="vViews">
-          <button data-v="auto" aria-pressed="true">⟳ Giro</button><button data-v="front" aria-pressed="false">Frontal</button><button data-v="top" aria-pressed="false">Superior</button><button data-v="iso" aria-pressed="false">Isométrica</button></div>
-        <label class="cut">Corte <input type="range" id="vCut" min="0" max="100" value="100" aria-label="Plano de corte horizontal"></label>
-      </div>
-      <div class="vfail" id="vfail">Tu navegador no admite WebGL 2. Descarga el modelo con el botón de la derecha.</div>
-    </div>
-    <div class="card" id="vinfo">
-      <h3 id="vName">–</h3>
-      <div class="specs" id="vSpecs"></div>
-      <p id="vDesc"></p>
-      <p class="note" id="vData"></p>
-      <a class="btn primary" id="vDl" href="#" download>⬇ Descargar STL</a>
-      <p class="note">Se puede abrir en cualquier laminador (Creality Print, Cura) o visor 3D.</p>
-    </div>
-  </div>
-</div></section>
-
-<section id="resultados"><div class="wrap">
-  <h2>Resultados</h2>
-  <p class="sub">Datos reales de las 54 probetas. Cambia el ensayo, la variable y la geometría; pasa el cursor por las barras para ver el valor exacto.</p>
-  <div class="controls">
-    <div class="seg" role="group" aria-label="Ensayo" id="segEnsayo">
-      <button data-v="T" aria-pressed="true">Tensión</button><button data-v="C" aria-pressed="false">Compresión</button><button data-v="F" aria-pressed="false">Flexión</button></div>
-    <div class="seg" role="group" aria-label="Variable" id="segMetric">
-      <button data-v="fmax_N" aria-pressed="true">Fuerza máx.</button><button data-v="npg" aria-pressed="false">Fuerza/masa</button><button data-v="deform_mm" aria-pressed="false">Deformación</button><button data-v="peso_g" aria-pressed="false">Masa</button></div>
-    <div class="seg" role="group" aria-label="Geometría" id="segGeo">
-      <button data-v="avg" aria-pressed="true">Media G1+G2</button><button data-v="G1" aria-pressed="false">G1</button><button data-v="G2" aria-pressed="false">G2</button></div>
-  </div>
-  <div class="chartbox"><svg id="chart" viewBox="0 0 760 380" role="img" aria-label="Gráfico de barras por orientación y configuración"></svg>
-    <div class="legend" id="legend"></div></div>
+<section id="laboratorio"><div class="wrap">
+  <h2>Laboratorio de resultados</h2>
+  <p class="sub">Todo está conectado: elige el ensayo y la geometría, y el modelo 3D, las gráficas, la tabla y la comparación se actualizan juntos. Haz clic en una barra, un punto o una fila para seleccionar esa condición.</p>
   <div class="findings" id="findings"></div>
-  <h3 style="margin:34px 0 10px">Todas las probetas</h3>
-  <div class="tablewrap"><table id="tbl"><thead><tr>
-    <th data-k="id">Código</th><th data-k="config">Config.</th><th data-k="orientacion">Orient.</th>
-    <th class="num" data-k="fmax_N">F máx (N)</th><th class="num" data-k="deform_mm">Def. (mm)</th><th class="num" data-k="peso_g">Masa (g)</th><th class="num" data-k="npg">F/m (N/g)</th><th data-k="falla">Falla</th></tr></thead><tbody></tbody></table></div>
-  <p class="note">Clic en un encabezado para ordenar. Código: ensayo-geometría-configuración-orientación (V90 = vertical, D45 = inclinada, H0 = horizontal).</p>
-</div></section>
-
-<section id="eficiencia"><div class="wrap">
-  <h2>Eficiencia: fuerza contra masa</h2>
-  <p class="sub">Cada punto es una probeta. La línea punteada marca la fuerza por gramo promedio de la configuración Fina: los puntos por debajo de ella rinden menos por unidad de material.</p>
-  <div class="controls"><div class="seg" role="group" aria-label="Ensayo del gráfico de dispersión" id="segSc">
-    <button data-v="T" aria-pressed="true">Tensión</button><button data-v="C" aria-pressed="false">Compresión</button><button data-v="F" aria-pressed="false">Flexión</button></div></div>
-  <div class="chartbox"><svg id="scatter" viewBox="0 0 760 400" role="img" aria-label="Dispersión de fuerza máxima contra masa por probeta"></svg>
-    <div class="legend" id="scLegend"></div></div>
-  <p class="note">Círculo = geometría G1, cuadrado = G2. Pasa el cursor para ver la probeta. La pendiente de la línea es la eficiencia (N/g) media de Fina en el ensayo elegido.</p>
-</div></section>
-
-<section id="tiempo"><div class="wrap">
-  <h2>Tiempo de impresión y filamento</h2>
-  <p class="sub">Estimaciones de la vista previa de Creality Print para una pieza en orientación vertical y en horizontal. Clic en una imagen para ampliarla.</p>
-  <div class="grid2">
-    <div class="card"><h3>Vertical (90°)</h3><img class="zoom" src="articulo/anexo/lam_a.jpg" alt="Vista previa del código G con la pieza en orientación vertical" loading="lazy" style="border-radius:10px;margin:8px 0;cursor:zoom-in">
-      <div class="kpis"><div class="kpi"><small>Tiempo</small><b>48 min 19 s</b></div><div class="kpi"><small>Filamento</small><b>6,77 g</b></div></div></div>
-    <div class="card"><h3>Horizontal (0°)</h3><img class="zoom" src="articulo/anexo/lam_b.jpg" alt="Vista previa del código G con la pieza en orientación horizontal" loading="lazy" style="border-radius:10px;margin:8px 0;cursor:zoom-in">
-      <div class="kpis"><div class="kpi"><small>Tiempo</small><b>23 min 22 s</b></div><div class="kpi"><small>Filamento</small><b>5,54 g</b></div></div></div>
+  <div class="ctrlbar">
+    <div><b>Ensayo</b><div class="seg" role="group" aria-label="Ensayo" id="segEnsayo" style="vertical-align:middle">
+      <button data-v="T" aria-pressed="true">Tensión</button><button data-v="C" aria-pressed="false">Compresión</button><button data-v="F" aria-pressed="false">Flexión</button></div></div>
+    <div><b>Geometría</b><div class="seg" role="group" aria-label="Geometría" id="segGeo" style="vertical-align:middle">
+      <button data-v="avg" aria-pressed="true">Media G1+G2</button><button data-v="G1" aria-pressed="false">G1</button><button data-v="G2" aria-pressed="false">G2</button></div></div>
   </div>
-  <div class="card" style="margin-top:16px" id="timeBars"></div>
+  <div class="lab">
+    <aside class="labL">
+      <div class="vwrap" id="vwrap">
+        <canvas id="cv" tabindex="0" aria-label="Visor 3D de la geometría: arrastra para girar, rueda para acercar"></canvas>
+        <div class="vname" id="vName">–</div>
+        <div class="vcount" id="vCount" aria-live="polite">1 / 1</div>
+        <button class="arrow3d prev" id="vPrev" aria-label="Modelo anterior" title="Modelo anterior">‹</button>
+        <button class="arrow3d next" id="vNext" aria-label="Modelo siguiente" title="Modelo siguiente">›</button>
+        <div class="hud">
+          <div class="seg" role="group" aria-label="Vistas" id="vViews">
+            <button data-v="auto" aria-pressed="true">⟳</button><button data-v="front" aria-pressed="false">Frontal</button><button data-v="top" aria-pressed="false">Superior</button><button data-v="iso" aria-pressed="false">Iso</button></div>
+          <label class="cut">Corte <input type="range" id="vCut" min="0" max="100" value="100" aria-label="Plano de corte horizontal"></label>
+        </div>
+        <div class="vfail" id="vfail">Tu navegador no admite WebGL 2. Descarga el modelo con el enlace de abajo.</div>
+      </div>
+      <div class="vmeta"><span id="vSpecs">–</span><a id="vDl" href="#" download>⬇ STL</a></div>
+      <div class="card cond">
+        <h3 style="margin:0">Condición seleccionada</h3>
+        <div id="cfgBtns" class="cond"></div>
+        <div id="oriBtns" class="orients"></div>
+      </div>
+      <div class="card" id="detail"></div>
+    </aside>
+    <div class="labR">
+      <div class="seg tabs" role="tablist" aria-label="Vista de datos" id="segTab">
+        <button data-v="bars" aria-pressed="true">Barras</button><button data-v="sc" aria-pressed="false">Fuerza vs masa</button><button data-v="time" aria-pressed="false">Tiempo</button><button data-v="tbl" aria-pressed="false">Tabla</button><button data-v="cmp" aria-pressed="false">Comparar</button></div>
+
+      <div id="p-bars" class="panel">
+        <div class="controls"><div class="seg" role="group" aria-label="Variable" id="segMetric">
+          <button data-v="fmax_N" aria-pressed="true">Fuerza máx.</button><button data-v="npg" aria-pressed="false">Fuerza/masa</button><button data-v="deform_mm" aria-pressed="false">Deformación</button><button data-v="peso_g" aria-pressed="false">Masa</button></div></div>
+        <div class="chartbox"><svg id="chart" viewBox="0 0 760 380" role="img" aria-label="Gráfico de barras por orientación y configuración"></svg><div class="legend" id="legend"></div></div>
+      </div>
+
+      <div id="p-sc" class="panel" hidden>
+        <p class="note" style="margin-top:0">Cada punto es una probeta. La línea punteada marca la fuerza por gramo promedio de la configuración Fina: los puntos por debajo rinden menos por unidad de material. Círculo = G1, cuadrado = G2.</p>
+        <div class="chartbox"><svg id="scatter" viewBox="0 0 760 400" role="img" aria-label="Dispersión de fuerza máxima contra masa por probeta"></svg><div class="legend" id="scLegend"></div></div>
+      </div>
+
+      <div id="p-time" class="panel" hidden>
+        <p class="note" style="margin-top:0">Estimaciones de la vista previa de Creality Print para una pieza en orientación vertical y en horizontal. Clic en una imagen para ampliarla.</p>
+        <div class="grid2">
+          <div class="card"><h3>Vertical (90°)</h3><img class="zoom" src="articulo/anexo/lam_a.jpg" alt="Vista previa del código G con la pieza en orientación vertical" loading="lazy" style="border-radius:10px;margin:8px 0;cursor:zoom-in"></div>
+          <div class="card"><h3>Horizontal (0°)</h3><img class="zoom" src="articulo/anexo/lam_b.jpg" alt="Vista previa del código G con la pieza en orientación horizontal" loading="lazy" style="border-radius:10px;margin:8px 0;cursor:zoom-in"></div>
+        </div>
+        <div class="card" style="margin-top:14px" id="timeBars"></div>
+      </div>
+
+      <div id="p-tbl" class="panel" hidden>
+        <div class="tablewrap"><table id="tbl"><thead><tr>
+          <th data-k="id">Código</th><th data-k="config">Config.</th><th data-k="orientacion">Orient.</th>
+          <th class="num" data-k="fmax_N">F máx (N)</th><th class="num" data-k="deform_mm">Def. (mm)</th><th class="num" data-k="peso_g">Masa (g)</th><th class="num" data-k="npg">F/m (N/g)</th><th data-k="falla">Falla</th></tr></thead><tbody></tbody></table></div>
+        <p class="note">Filas del ensayo y la geometría elegidos. Clic en un encabezado para ordenar y en una fila para seleccionarla. Código: ensayo-geometría-configuración-orientación (V90 = vertical, D45 = inclinada, H0 = horizontal).</p>
+      </div>
+
+      <div id="p-cmp" class="panel" hidden>
+        <div class="controls">
+          <label class="sel">Comparar la condición seleccionada (A) con<select id="cBc"><option value="Fina">Fina</option><option value="Estandar">Estándar</option><option value="Fuerte" selected>Fuerte</option></select></label>
+          <label class="sel">Orientación de B<select id="cBo"><option value="H0">Horizontal (0°)</option><option value="D45">Inclinada (45°)</option><option value="V90">Vertical (90°)</option></select></label>
+        </div>
+        <div class="tablewrap tscroll"><table id="cmp"><thead><tr><th>Variable</th><th class="num" id="cmpA">A</th><th class="num" id="cmpB">B</th><th class="num">B frente a A</th></tr></thead><tbody></tbody></table></div>
+        <p class="note" id="cmpNote"></p>
+      </div>
+    </div>
+  </div>
 </div></section>
 
-<section id="galeria"><div class="wrap">
+<section id="proceso"><div class="wrap">
   <h2>Explora el proceso</h2>
-  <p class="sub">Capturas y fotografías del trabajo: del diseño generativo al laminado y las piezas fabricadas. Haz clic para ampliar.</p>
+  <p class="sub">Capturas y fotografías del trabajo: del diseño generativo al laminado y las piezas fabricadas. Clic para ampliar.</p>
   <div class="controls"><div class="seg" role="group" aria-label="Tipo de imagen" id="segGal">
     <button data-v="todo" aria-pressed="true">Todo</button><button data-v="fusion" aria-pressed="false">Fusion 360</button><button data-v="lam" aria-pressed="false">Creality Print</button><button data-v="fotos" aria-pressed="false">Piezas</button></div></div>
   <div class="gal" id="gal"></div>
   <dialog id="dlg"><img id="dlgimg" alt=""><form method="dialog" style="text-align:right;margin-top:8px"><button class="btn">Cerrar</button></form></dialog>
 </div></section>
 
-<section id="explorador"><div class="wrap">
-  <h2>Explorador de condiciones</h2>
-  <p class="sub">Elige una combinación y consulta lo que se midió en esa probeta. Son valores experimentales, no una predicción: solo existen las combinaciones ensayadas.</p>
-  <div class="explorer">
-    <div class="ocard">
-      <div class="controls" style="margin-bottom:6px">
-        <label class="sel">Ensayo<select id="xE"><option value="T">Tensión</option><option value="C">Compresión</option><option value="F">Flexión</option></select></label>
-        <label class="sel">Geometría<select id="xG"><option value="G1">G1</option><option value="G2">G2</option></select></label>
-        <label class="sel">Configuración<select id="xC"><option value="Fina">Fina</option><option value="Estandar">Estándar</option><option value="Fuerte">Fuerte</option></select></label>
-        <label class="sel">Orientación<select id="xO"><option value="H0">Horizontal (0°)</option><option value="D45">Inclinada (45°)</option><option value="V90">Vertical (90°)</option></select></label>
-      </div>
-      <div id="xParams" class="note"></div>
-      <div id="xOrient" style="margin-top:10px;text-align:center"></div>
-    </div>
-    <div class="ocard">
-      <div class="kpis">
-        <div class="kpi"><small>Fuerza máxima</small><b id="kF">–</b><div class="meter"><i id="mF"></i></div></div>
-        <div class="kpi"><small>Deformación</small><b id="kD">–</b><div class="meter"><i id="mD"></i></div></div>
-        <div class="kpi"><small>Masa</small><b id="kM">–</b><div class="meter"><i id="mM"></i></div></div>
-        <div class="kpi"><small>Eficiencia (F/m)</small><b id="kE">–</b><div class="meter"><i id="mE"></i></div></div>
-      </div>
-      <span class="failtag" id="kFail">–</span>
-      <p class="note" id="xNote"></p>
-    </div>
-  </div>
-</div></section>
-
-<section id="comparador"><div class="wrap">
-  <h2>Comparador de condiciones</h2>
-  <p class="sub">Enfrenta dos combinaciones del mismo ensayo y mira la diferencia en cada variable.</p>
-  <div class="controls">
-    <label class="sel">Ensayo<select id="cE"><option value="T">Tensión</option><option value="C">Compresión</option><option value="F">Flexión</option></select></label>
-    <label class="sel">Geometría<select id="cG"><option value="avg">Media G1+G2</option><option value="G1">G1</option><option value="G2">G2</option></select></label>
-    <label class="sel">A · Configuración<select id="cAc"><option value="Fina">Fina</option><option value="Estandar">Estándar</option><option value="Fuerte">Fuerte</option></select></label>
-    <label class="sel">A · Orientación<select id="cAo"><option value="H0">Horizontal (0°)</option><option value="D45">Inclinada (45°)</option><option value="V90">Vertical (90°)</option></select></label>
-    <label class="sel">B · Configuración<select id="cBc"><option value="Fina">Fina</option><option value="Estandar">Estándar</option><option value="Fuerte" selected>Fuerte</option></select></label>
-    <label class="sel">B · Orientación<select id="cBo"><option value="H0">Horizontal (0°)</option><option value="D45">Inclinada (45°)</option><option value="V90">Vertical (90°)</option></select></label>
-  </div>
-  <div class="tablewrap"><table id="cmp"><thead><tr><th>Variable</th><th class="num">A</th><th class="num">B</th><th class="num">B frente a A</th></tr></thead><tbody></tbody></table></div>
-  <p class="note" id="cmpNote"></p>
-</div></section>
-
-<section id="conclusion"><div class="wrap">
+<section id="cierre"><div class="wrap">
   <h2>Conclusión</h2>
   <div class="question" style="font-size:22px;font-weight:600;line-height:1.4">La orientación horizontal y la configuración Fuerte dieron la mayor carga, pero con más masa y menos fuerza por gramo: elegir parámetros exige equilibrar carga y material.</div>
-  <div class="grid3" style="margin-top:18px">
-    <div class="card"><h3>Carga</h3><p>Horizontal y configuración Fuerte maximizan la fuerza soportada en los tres ensayos.</p></div>
-    <div class="card"><h3>Material</h3><p>Fuerte pesa más del doble que Fina y rinde menos fuerza por gramo.</p></div>
-    <div class="card"><h3>Alcance</h3><p>Estudio exploratorio con una probeta por condición y carga manual; las tendencias requieren replicación.</p></div>
-  </div>
-</div></section>
-
-<section id="referencias"><div class="wrap">
-  <h2>Documentos y referencias</h2>
-  <p class="sub">Todo el material del proyecto está abierto en el repositorio.</p>
-  <div class="grid2">
+  <div class="grid2" style="margin-top:22px">
     <div class="reflist">
+      <h3 style="margin:0 0 6px">Documentos</h3>
       <a href="articulo/articulo.pdf">Artículo (PDF)<small>Estructura IMRyD del Seminario de Investigación</small></a>
       <a href="poster/poster.pdf">Póster A1 (PDF)<small>594 × 841 mm, con QR al artículo</small></a>
       <a href="datos/resultados.csv">Datos de las 54 probetas (CSV)<small>Tablas 4–9 transcritas</small></a>
-      <a href="https://github.com/IngDinoAlip/impresion3d-fdm-pla">Repositorio en GitHub<small>Scripts reproducibles, figuras y referencias</small></a>
+      <a href="https://github.com/IngDinoAlip/impresion3d-fdm-pla">Repositorio en GitHub<small>Scripts reproducibles, modelos STL, figuras y referencias</small></a>
     </div>
     <div class="reflist">
+      <h3 style="margin:0 0 6px">Referencias clave</h3>
       <a href="https://doi.org/10.1016/j.matdes.2017.03.065">Chacón et al. (2017)<small>PLA por FDM: efecto de los parámetros en las propiedades mecánicas · Materials &amp; Design</small></a>
       <a href="https://doi.org/10.3390/polym15204169">Al-Tamimi et al. (2023)<small>Tensión, flexión y compresión de PLA con diseño de cribado · Polymers</small></a>
       <a href="https://doi.org/10.1016/j.promfg.2017.07.079">Alafaghani et al. (2017)<small>Optimización experimental de parámetros FDM · Procedia Manufacturing</small></a>
@@ -411,6 +349,8 @@ DATA.forEach(r=>{r.npg=r.fmax_N/r.peso_g});
 const fmt=(v,d=1)=>Number(v).toLocaleString("es-CO",{minimumFractionDigits:d,maximumFractionDigits:d});
 const mean=a=>a.reduce((x,y)=>x+y,0)/a.length;
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const S={e:"T",g:"avg",tab:"bars",m:"fmax_N",sel:{c:"Fuerte",o:"H0"}};
+let V=null; /* visor 3D */
 
 /* tema */
 (function(){let t="dark";try{t=localStorage.getItem("tema")||(matchMedia("(prefers-color-scheme: light)").matches?"light":"dark")}catch(e){}
@@ -431,121 +371,82 @@ function orientSVG(a,w=150,h=120){
     <path d="M${L/2+4} 0h14m-5 -4l5 4l-5 4M${-L/2-4} 0h-14m5 -4l-5 4l5 4" stroke="var(--accent2)" stroke-width="2.2" fill="none" stroke-linecap="round"/>
    </g></svg>`;
 }
-$("#orients").innerHTML=["H0","D45","V90"].map(k=>`<div style="text-align:center">${orientSVG(ORI[k].a)}<div><b>${ORI[k].n}</b></div></div>`).join("");
 
-/* seg buttons */
+/* utilidades de interfaz */
 function seg(id,cb){const el=$(id);el.addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;[...el.children].forEach(x=>x.setAttribute("aria-pressed",x===b));cb(b.dataset.v)});}
-const S={e:"T",m:"fmax_N",g:"avg"};
-seg("#segEnsayo",v=>{S.e=v;draw();});seg("#segMetric",v=>{S.m=v;draw();});seg("#segGeo",v=>{S.g=v;draw();});
-
-function val(e,c,o,m,g){
-  let rows=DATA.filter(r=>r.ensayo===e&&r.config===c&&r.orientacion===o);
-  if(g!=="avg")rows=rows.filter(r=>r.diseno===g);
-  return mean(rows.map(r=>r[m]));
-}
-/* grafico */
+function setPressed(id,v){[...$(id).children].forEach(x=>x.setAttribute("aria-pressed",x.dataset.v===v))}
 const tip=$("#tip");
-function showTip(ev,html){tip.innerHTML=html;tip.style.display="block";const x=Math.min(ev.clientX+14,innerWidth-250);tip.style.left=x+"px";tip.style.top=(ev.clientY+14)+"px"}
+function showTip(ev,html){tip.innerHTML=html;tip.style.display="block";tip.style.left=Math.min(ev.clientX+14,innerWidth-250)+"px";tip.style.top=(ev.clientY+14)+"px"}
 function hideTip(){tip.style.display="none"}
-function draw(){
-  const W=760,H=380,m={l:62,r:16,t:20,b:56},pw=W-m.l-m.r,ph=H-m.t-m.b,M=MET[S.m];
-  const cfgs=["Fina","Estandar","Fuerte"];
-  const vals=ORDER.flatMap(o=>cfgs.map(c=>val(S.e,c,o,S.m,S.g)));
-  const max=Math.max(...vals), step=niceStep(max/5), top=Math.ceil(max/step)*step;
-  const y=v=>m.t+ph-(v/top)*ph;
-  let s="";
-  for(let t=0;t<=top+1e-9;t+=step){s+=`<line class="axis" x1="${m.l}" x2="${W-m.r}" y1="${y(t)}" y2="${y(t)}" stroke-dasharray="${t?3:0}"/><text x="${m.l-8}" y="${y(t)+4}" text-anchor="end">${fmt(t,step<1?1:0)}</text>`}
-  const gw=pw/3,bw=gw/4.2;
-  ORDER.forEach((o,i)=>{
-    const gx=m.l+gw*i+gw/2;
-    cfgs.forEach((c,j)=>{
-      const v=val(S.e,c,o,S.m,S.g),x=gx+(j-1)*(bw+6)-bw/2,hh=m.t+ph-y(v);
-      s+=`<rect class="bar" x="${x}" y="${y(v)}" width="${bw}" height="${hh}" rx="4" fill="${CFG[c].c}" data-t="<b>${CFG[c].n} · ${ORI[o].n}</b><br>${M.n}: ${fmt(v,M.d)} ${M.u}<br>${ENS[S.e]} · ${S.g==="avg"?"media G1+G2":S.g}"/>`;
-      s+=`<text x="${x+bw/2}" y="${y(v)-6}" text-anchor="middle" style="fill:var(--text);font-weight:600">${fmt(v,M.d)}</text>`;
-    });
-    s+=`<text x="${gx}" y="${H-m.b+22}" text-anchor="middle" style="fill:var(--text);font-size:14px">${ORI[o].n}</text>`;
-  });
-  s+=`<text x="16" y="${m.t+ph/2}" transform="rotate(-90 16 ${m.t+ph/2})" text-anchor="middle">${M.n} (${M.u})</text>`;
-  $("#chart").innerHTML=s;
-  $$("#chart .bar").forEach(b=>{b.onmousemove=e=>showTip(e,b.dataset.t);b.onmouseleave=hideTip;});
-  $("#legend").innerHTML=cfgs.map(c=>`<span><span class="dot" style="background:${CFG[c].c}"></span>${CFG[c].n}</span>`).join("");
-  table();
-}
 function niceStep(x){const p=Math.pow(10,Math.floor(Math.log10(x))),f=x/p;return (f<=1?1:f<=2?2:f<=5?5:10)*p}
+function rowsOf(c,o,g=S.g){let r=DATA.filter(d=>d.ensayo===S.e&&d.config===c&&d.orientacion===o);if(g!=="avg")r=r.filter(d=>d.diseno===g);return r}
+function val(e,c,o,k,g){let r=DATA.filter(d=>d.ensayo===e&&d.config===c&&d.orientacion===o);if(g!=="avg")r=r.filter(d=>d.diseno===g);return mean(r.map(d=>d[k]))}
+function select(c,o){if(c)S.sel.c=c;if(o)S.sel.o=o;renderCond();renderDetail();renderBars();renderScatter();renderTable();renderCompare()}
 
-/* hallazgos calculados */
+/* hallazgos globales */
 function findings(){
   const r=m=>["T","C","F"].map(e=>mean(DATA.filter(d=>d.ensayo===e&&d.config==="Fuerte").map(d=>d[m]))/mean(DATA.filter(d=>d.ensayo===e&&d.config==="Fina").map(d=>d[m]))-1);
-  const f=r("fmax_N").map(x=>x*100), mass=(mean(DATA.filter(d=>d.config==="Fuerte").map(d=>d.peso_g))/mean(DATA.filter(d=>d.config==="Fina").map(d=>d.peso_g))-1)*100;
-  const npg=r("npg").map(x=>x*100);
+  const f=r("fmax_N").map(x=>x*100),mass=(mean(DATA.filter(d=>d.config==="Fuerte").map(d=>d.peso_g))/mean(DATA.filter(d=>d.config==="Fina").map(d=>d.peso_g))-1)*100,npg=r("npg").map(x=>x*100);
   const vh=["T","C","F"].map(e=>{const k=[];DATA.filter(d=>d.ensayo===e&&d.orientacion==="V90").forEach(v=>{const h=DATA.find(d=>d.id===v.id.replace("V90","H0"));k.push((1-v.fmax_N/h.fmax_N)*100)});return mean(k)});
   const lo=Math.round(Math.min(...f)),hi=Math.round(Math.max(...f));
   $("#heroDelta").textContent=`+${lo}–${hi} %`;
   $("#findings").innerHTML=[
-   [`+${lo}–${hi} %`,"Fuerza máxima de la configuración Fuerte frente a la Fina (razón de medias por ensayo)."],
+   [`+${lo}–${hi} %`,"Fuerza de Fuerte frente a Fina (razón de medias por ensayo)."],
    [`+${Math.round(mass)} %`,"Masa de Fuerte respecto de Fina: 9,1 g contra 4,3 g."],
-   [`−${Math.abs(Math.round(Math.max(...npg)))} a −${Math.abs(Math.round(Math.min(...npg)))} %`,"Fuerza por gramo de Fuerte frente a Fina: rinde menos en los tres ensayos."],
-   [`${Math.round(Math.min(...vh))}–${Math.round(Math.max(...vh))} %`,"Cuánto queda la orientación vertical por debajo de la horizontal en fuerza máxima."]
+   [`−${Math.abs(Math.round(Math.max(...npg)))} a −${Math.abs(Math.round(Math.min(...npg)))} %`,"Fuerza por gramo de Fuerte frente a Fina."],
+   [`${Math.round(Math.min(...vh))}–${Math.round(Math.max(...vh))} %`,"Cuánto queda la vertical por debajo de la horizontal."]
   ].map(([b,t])=>`<div class="find"><div class="big">${b}</div><p>${t}</p></div>`).join("");
 }
 
-/* tabla */
-let sortK="id",sortAsc=true;
-function table(){
-  const rows=DATA.filter(r=>r.ensayo===S.e&&(S.g==="avg"||r.diseno===S.g)).slice().sort((a,b)=>{
-    const x=a[sortK],y=b[sortK];const c=typeof x==="number"?x-y:String(x).localeCompare(String(y),"es");return sortAsc?c:-c});
-  $("#tbl tbody").innerHTML=rows.map(r=>`<tr><td>${r.id}</td><td><span class="dot" style="background:${CFG[r.config].c}"></span>${CFG[r.config].n}</td><td>${ORI[r.orientacion].s}</td>
-   <td class="num">${fmt(r.fmax_N)}</td><td class="num">${fmt(r.deform_mm)}</td><td class="num">${fmt(r.peso_g)}</td><td class="num">${fmt(r.npg)}</td><td>${r.falla}</td></tr>`).join("");
+/* condicion seleccionada: configuracion + orientacion */
+function renderCond(){
+  const par=c=>{const r=DATA.find(d=>d.config===c);return `${r.infill_pct} % relleno · ${r.paredes} paredes · capa ${fmt(r.capa_mm,2)} mm · ${r.patron.toLowerCase()}`};
+  $("#cfgBtns").innerHTML=["Fina","Estandar","Fuerte"].map(c=>`<button class="cfgbtn" data-c="${c}" aria-pressed="${S.sel.c===c}"><span><span class="dot" style="background:${CFG[c].c}"></span><b>${CFG[c].n}</b></span><small>${par(c)}</small></button>`).join("");
+  $("#oriBtns").innerHTML=["H0","D45","V90"].map(o=>`<button class="obtn" data-o="${o}" aria-pressed="${S.sel.o===o}">${orientSVG(ORI[o].a,110,78)}${ORI[o].n}</button>`).join("");
+  $$("#cfgBtns button").forEach(b=>b.onclick=()=>select(b.dataset.c,null));
+  $$("#oriBtns button").forEach(b=>b.onclick=()=>select(null,b.dataset.o));
 }
-$("#tbl thead").addEventListener("click",e=>{const th=e.target.closest("th[data-k]");if(!th)return;sortAsc=sortK===th.dataset.k?!sortAsc:true;sortK=th.dataset.k;table()});
-
-/* galeria */
-const GAL=[
- ["fusion","p13_0","Compresión: geometrías a preservar, obstáculo y carga"],["fusion","p14_1","Compresión: alternativa generada"],
- ["fusion","p16_1","Flexión: alternativa generada"],["fusion","p17_1","Flexión: resultados del diseño generativo"],
- ["fusion","p19_1","Tensión: alternativa generada"],["fusion","p20_1","Tensión: comparación de resultados"],
- ["lam","p21_0","Creality Print: orientación en la cama"],["lam","p23_0","Creality Print: orientación inclinada"],["lam","p26_0","Creality Print: vista previa del código G"],["lam","lam_a","Tiempo y filamento estimados: orientación vertical (90°)"],["lam","lam_b","Tiempo y filamento estimados: orientación horizontal (0°)"],
- ["fotos","p33_0","Distribución de las piezas en la cama"],["fotos","p33_1","Piezas impresas"],["fotos","p34_0","Piezas impresas"],["fotos","p34_1","Piezas de compresión y flexión"]];
-function gal(f){$("#gal").innerHTML=GAL.filter(g=>f==="todo"||g[0]===f).map(g=>`<figure><img loading="lazy" src="articulo/anexo/${g[1]}.jpg" alt="${g[2]}"><figcaption>${g[2]}</figcaption></figure>`).join("");}
-seg("#segGal",gal);gal("todo");
-$("#gal").addEventListener("click",e=>{const i=e.target.closest("img");if(!i)return;$("#dlgimg").src=i.src;$("#dlgimg").alt=i.alt;$("#dlg").showModal()});
-$("#dlg").addEventListener("click",e=>{if(e.target===$("#dlg"))$("#dlg").close()});
-
-/* explorador */
-function explorer(){
-  const e=$("#xE").value,g=$("#xG").value,c=$("#xC").value,o=$("#xO").value;
-  const r=DATA.find(d=>d.ensayo===e&&d.diseno===g&&d.config===c&&d.orientacion===o);
-  const all=DATA.filter(d=>d.ensayo===e);
-  const mx=k=>Math.max(...all.map(d=>d[k]));
-  $("#kF").textContent=fmt(r.fmax_N)+" N";$("#kD").textContent=fmt(r.deform_mm)+" mm";$("#kM").textContent=fmt(r.peso_g)+" g";$("#kE").textContent=fmt(r.npg)+" N/g";
-  $("#mF").style.width=r.fmax_N/mx("fmax_N")*100+"%";$("#mD").style.width=r.deform_mm/mx("deform_mm")*100+"%";$("#mM").style.width=r.peso_g/mx("peso_g")*100+"%";$("#mE").style.width=r.npg/mx("npg")*100+"%";
-  $("#kFail").textContent=r.falla;
-  const ref=DATA.find(d=>d.ensayo===e&&d.diseno===g&&d.config==="Fina"&&d.orientacion===o);
-  const ho=DATA.find(d=>d.ensayo===e&&d.diseno===g&&d.config===c&&d.orientacion==="H0");
-  const dF=(r.fmax_N/ref.fmax_N-1)*100, dH=(r.fmax_N/ho.fmax_N-1)*100;
-  $("#xNote").innerHTML=`Barras: proporción respecto del máximo del ensayo de ${ENS[e].toLowerCase()}. `+
-    (c!=="Fina"?`Frente a la configuración Fina en la misma orientación: <b>${dF>=0?"+":""}${fmt(dF,0)} %</b> de fuerza. `:"")+
-    (o!=="H0"?`Frente a la horizontal con esta configuración: <b>${fmt(dH,0)} %</b>.`:"");
-  $("#xParams").innerHTML=`<b>${CFG[c].n}</b>: relleno ${r.infill_pct} %, ${r.paredes} paredes, capa ${fmt(r.capa_mm,2)} mm, patrón ${r.patron.toLowerCase()}. Probeta <code>${r.id}</code>.`;
-  $("#xOrient").innerHTML=orientSVG(ORI[o].a,220,150);
+function renderDetail(){
+  const e=S.e,c=S.sel.c,o=S.sel.o,rs=rowsOf(c,o),g=rs.map(r=>r.diseno);
+  const mx=k=>Math.max(...DATA.filter(d=>d.ensayo===e).map(d=>d[k]));
+  const v=k=>mean(rs.map(r=>r[k]));
+  const ref=mean(rowsOf("Fina",o).map(r=>r.fmax_N)),ho=mean(rowsOf(c,"H0").map(r=>r.fmax_N));
+  const dF=(v("fmax_N")/ref-1)*100,dH=(v("fmax_N")/ho-1)*100;
+  $("#detail").innerHTML=`<h3>${ENS[e]} · ${CFG[c].n} · ${ORI[o].s}</h3><p class="note" style="margin:0 0 8px">${S.g==="avg"?"Media de G1 y G2":"Geometría "+S.g} · probeta${rs.length>1?"s":""} ${rs.map(r=>r.id).join(", ")}</p>
+  <div class="kpis">
+   <div class="kpi"><small>Fuerza máxima</small><b>${fmt(v("fmax_N"))} N</b><div class="meter"><i style="width:${v("fmax_N")/mx("fmax_N")*100}%"></i></div></div>
+   <div class="kpi"><small>Deformación</small><b>${fmt(v("deform_mm"))} mm</b><div class="meter"><i style="width:${v("deform_mm")/mx("deform_mm")*100}%"></i></div></div>
+   <div class="kpi"><small>Masa</small><b>${fmt(v("peso_g"))} g</b><div class="meter"><i style="width:${v("peso_g")/mx("peso_g")*100}%"></i></div></div>
+   <div class="kpi"><small>Fuerza / masa</small><b>${fmt(v("npg"))} N/g</b><div class="meter"><i style="width:${v("npg")/mx("npg")*100}%"></i></div></div></div>
+  ${rs.map(r=>`<span class="failtag">${rs.length>1?r.diseno+": ":""}${r.falla}</span>`).join("")}
+  <p class="note">${c!=="Fina"?`Frente a Fina (misma orientación): <b>${dF>=0?"+":""}${fmt(dF,0)} %</b> de fuerza. `:""}${o!=="H0"?`Frente a la horizontal: <b>${fmt(dH,0)} %</b>.`:""}</p>`;
 }
-["#xE","#xG","#xC","#xO"].forEach(s=>$(s).addEventListener("change",explorer));
 
-/* menu activo */
-const links=$$("#menu a");
-const io=new IntersectionObserver(es=>es.forEach(en=>{if(en.isIntersecting){links.forEach(a=>a.classList.toggle("active",a.getAttribute("href")==="#"+en.target.id))}}),{rootMargin:"-45% 0px -50% 0px"});
-["inicio","proyecto","metodologia","modelo3d","resultados","eficiencia","tiempo","galeria","explorador","comparador","conclusion","referencias"].forEach(id=>{const el=document.getElementById(id);if(el)io.observe(el)});
+/* barras */
+function renderBars(){
+  const W=760,H=380,m={l:62,r:16,t:20,b:56},pw=W-m.l-m.r,ph=H-m.t-m.b,M=MET[S.m],cfgs=["Fina","Estandar","Fuerte"];
+  const vals=ORDER.flatMap(o=>cfgs.map(c=>val(S.e,c,o,S.m,S.g)));
+  const max=Math.max(...vals),step=niceStep(max/5),top=Math.ceil(max/step)*step,y=v=>m.t+ph-(v/top)*ph;
+  let s="";
+  for(let t=0;t<=top+1e-9;t+=step)s+=`<line class="axis" x1="${m.l}" x2="${W-m.r}" y1="${y(t)}" y2="${y(t)}" stroke-dasharray="${t?3:0}"/><text x="${m.l-8}" y="${y(t)+4}" text-anchor="end">${fmt(t,step<1?1:0)}</text>`;
+  const gw=pw/3,bw=gw/4.2;
+  ORDER.forEach((o,i)=>{const gx=m.l+gw*i+gw/2;
+    cfgs.forEach((c,j)=>{const v=val(S.e,c,o,S.m,S.g),x=gx+(j-1)*(bw+6)-bw/2,hh=m.t+ph-y(v),on=S.sel.c===c&&S.sel.o===o;
+      s+=`<rect class="bar" x="${x}" y="${y(v)}" width="${bw}" height="${hh}" rx="4" fill="${CFG[c].c}" ${on?'stroke="var(--text)" stroke-width="3"':""} data-c="${c}" data-o="${o}" data-t="<b>${CFG[c].n} · ${ORI[o].n}</b><br>${M.n}: ${fmt(v,M.d)} ${M.u}<br>${ENS[S.e]} · ${S.g==="avg"?"media G1+G2":S.g}"/>`;
+      s+=`<text x="${x+bw/2}" y="${y(v)-6}" text-anchor="middle" style="fill:var(--text);font-weight:600">${fmt(v,M.d)}</text>`});
+    s+=`<text x="${gx}" y="${H-m.b+22}" text-anchor="middle" style="fill:var(--text);font-size:14px">${ORI[o].n}</text>`});
+  s+=`<text x="16" y="${m.t+ph/2}" transform="rotate(-90 16 ${m.t+ph/2})" text-anchor="middle">${M.n} (${M.u})</text>`;
+  $("#chart").innerHTML=s;
+  $$("#chart .bar").forEach(b=>{b.onmousemove=e=>showTip(e,b.dataset.t);b.onmouseleave=hideTip;b.onclick=()=>select(b.dataset.c,b.dataset.o)});
+  $("#legend").innerHTML=cfgs.map(c=>`<span><span class="dot" style="background:${CFG[c].c}"></span>${CFG[c].n}</span>`).join("")+`<span>· Clic en una barra para seleccionarla</span>`;
+}
 
 /* dispersion fuerza vs masa */
-const SC={e:"T"};
-seg("#segSc",v=>{SC.e=v;scatter();});
-function scatter(){
+function renderScatter(){
   const W=760,H=400,m={l:62,r:20,t:20,b:52},pw=W-m.l-m.r,ph=H-m.t-m.b;
-  const rows=DATA.filter(r=>r.ensayo===SC.e);
-  const xmax=Math.ceil(Math.max(...rows.map(r=>r.peso_g))+0.5), ymaxRaw=Math.max(...rows.map(r=>r.fmax_N));
-  const ys=niceStep(ymaxRaw/5), ymax=Math.ceil(ymaxRaw/ys)*ys;
-  const X=v=>m.l+v/xmax*pw, Y=v=>m.t+ph-v/ymax*ph;
-  const k=mean(rows.filter(r=>r.config==="Fina").map(r=>r.npg));
+  const rows=DATA.filter(r=>r.ensayo===S.e);
+  const xmax=Math.ceil(Math.max(...rows.map(r=>r.peso_g))+0.5),ymaxRaw=Math.max(...rows.map(r=>r.fmax_N)),ys=niceStep(ymaxRaw/5),ymax=Math.ceil(ymaxRaw/ys)*ys;
+  const X=v=>m.l+v/xmax*pw,Y=v=>m.t+ph-v/ymax*ph,k=mean(rows.filter(r=>r.config==="Fina").map(r=>r.npg));
   let s="";
   for(let t=0;t<=ymax+1e-9;t+=ys)s+=`<line class="axis" x1="${m.l}" x2="${W-m.r}" y1="${Y(t)}" y2="${Y(t)}" stroke-dasharray="${t?3:0}"/><text x="${m.l-8}" y="${Y(t)+4}" text-anchor="end">${fmt(t,0)}</text>`;
   for(let t=0;t<=xmax;t+=1)s+=`<text x="${X(t)}" y="${H-m.b+18}" text-anchor="middle">${t}</text>`;
@@ -553,39 +454,57 @@ function scatter(){
   const x2=Math.min(xmax,ymax/k);
   s+=`<line x1="${X(0)}" y1="${Y(0)}" x2="${X(x2)}" y2="${Y(k*x2)}" stroke="var(--fina)" stroke-width="2" stroke-dasharray="6 5"/>`;
   rows.forEach(r=>{
-    const cx=X(r.peso_g),cy=Y(r.fmax_N),c=CFG[r.config].c,t=`<b>${r.id}</b><br>${fmt(r.fmax_N)} N · ${fmt(r.peso_g)} g<br>${fmt(r.npg)} N/g · ${ORI[r.orientacion].n}<br>${r.falla}`;
-    s+= r.diseno==="G1"
-      ? `<circle class="bar pt" cx="${cx}" cy="${cy}" r="8" fill="${c}" stroke="var(--bg)" stroke-width="1.5" data-t="${t}"/>`
-      : `<rect class="bar pt" x="${cx-7}" y="${cy-7}" width="14" height="14" rx="2" fill="${c}" stroke="var(--bg)" stroke-width="1.5" data-t="${t}"/>`;
+    const cx=X(r.peso_g),cy=Y(r.fmax_N),c=CFG[r.config].c,on=r.config===S.sel.c&&r.orientacion===S.sel.o,dim=S.g!=="avg"&&r.diseno!==S.g,
+      t=`<b>${r.id}</b><br>${fmt(r.fmax_N)} N · ${fmt(r.peso_g)} g<br>${fmt(r.npg)} N/g · ${ORI[r.orientacion].n}<br>${r.falla}`,
+      st=`fill="${c}" stroke="${on?"var(--text)":"var(--bg)"}" stroke-width="${on?3:1.5}" opacity="${dim?.25:1}" data-c="${r.config}" data-o="${r.orientacion}" data-t="${t}"`;
+    s+= r.diseno==="G1"?`<circle class="bar pt" cx="${cx}" cy="${cy}" r="${on?10:8}" ${st}/>`:`<rect class="bar pt" x="${cx-(on?9:7)}" y="${cy-(on?9:7)}" width="${on?18:14}" height="${on?18:14}" rx="2" ${st}/>`;
   });
   $("#scatter").innerHTML=s;
-  $$("#scatter .pt").forEach(b=>{b.onmousemove=e=>showTip(e,b.dataset.t);b.onmouseleave=hideTip;});
-  $("#scLegend").innerHTML=["Fina","Estandar","Fuerte"].map(c=>`<span><span class="dot" style="background:${CFG[c].c}"></span>${CFG[c].n}</span>`).join("")+`<span>┄ Fina media: ${fmt(k)} N/g</span>`;
+  $$("#scatter .pt").forEach(b=>{b.onmousemove=e=>showTip(e,b.dataset.t);b.onmouseleave=hideTip;b.onclick=()=>select(b.dataset.c,b.dataset.o)});
+  $("#scLegend").innerHTML=["Fina","Estandar","Fuerte"].map(c=>`<span><span class="dot" style="background:${CFG[c].c}"></span>${CFG[c].n}</span>`).join("")+`<span>┄ Fina media: ${fmt(k)} N/g (${ENS[S.e].toLowerCase()})</span>`;
 }
 
-/* tiempos: barras comparativas */
-function timeBars(){
+/* tabla */
+let sortK="id",sortAsc=true;
+function renderTable(){
+  const rows=DATA.filter(r=>r.ensayo===S.e&&(S.g==="avg"||r.diseno===S.g)).slice().sort((a,b)=>{const x=a[sortK],y=b[sortK],c=typeof x==="number"?x-y:String(x).localeCompare(String(y),"es");return sortAsc?c:-c});
+  $("#tbl tbody").innerHTML=rows.map(r=>`<tr class="row ${r.config===S.sel.c&&r.orientacion===S.sel.o?"sel":""}" data-c="${r.config}" data-o="${r.orientacion}"><td>${r.id}</td><td><span class="dot" style="background:${CFG[r.config].c}"></span>${CFG[r.config].n}</td><td>${ORI[r.orientacion].s}</td>
+   <td class="num">${fmt(r.fmax_N)}</td><td class="num">${fmt(r.deform_mm)}</td><td class="num">${fmt(r.peso_g)}</td><td class="num">${fmt(r.npg)}</td><td>${r.falla}</td></tr>`).join("");
+  $$("#tbl tbody tr").forEach(tr=>tr.onclick=()=>select(tr.dataset.c,tr.dataset.o));
+}
+$("#tbl thead").addEventListener("click",e=>{const th=e.target.closest("th[data-k]");if(!th)return;sortAsc=sortK===th.dataset.k?!sortAsc:true;sortK=th.dataset.k;renderTable()});
+
+/* comparador: A = condicion seleccionada */
+function renderCompare(){
+  const bc=$("#cBc").value,bo=$("#cBo").value,ac=S.sel.c,ao=S.sel.o;
+  const vars=[["fmax_N","Fuerza máxima","N"],["deform_mm","Deformación","mm"],["peso_g","Masa","g"],["npg","Fuerza / masa","N/g"]];
+  $("#cmpA").textContent=`A · ${CFG[ac].n}, ${ORI[ao].s}`;$("#cmpB").textContent=`B · ${CFG[bc].n}, ${ORI[bo].s}`;
+  $("#cmp tbody").innerHTML=vars.map(([k,n,u])=>{const a=val(S.e,ac,ao,k,S.g),b=val(S.e,bc,bo,k,S.g),d=(b/a-1)*100;
+    return `<tr><td>${n}</td><td class="num">${fmt(a)} ${u}</td><td class="num">${fmt(b)} ${u}</td><td class="num" style="color:${d>=0?"var(--accent)":"var(--danger)"};font-weight:700">${d>=0?"+":""}${fmt(d,0)} %</td></tr>`}).join("");
+  $("#cmpNote").textContent=`${ENS[S.e]}, ${S.g==="avg"?"media de G1 y G2":S.g}. A es la condición seleccionada a la izquierda: cámbiala con los botones de configuración y orientación.`;
+}
+["#cBc","#cBo"].forEach(s=>$(s).addEventListener("change",renderCompare));
+
+/* tiempos */
+function renderTimeBars(){
   const rows=[["Tiempo de impresión","48 min 19 s","23 min 22 s",48*60+19,23*60+22],["Masa de filamento","6,77 g","5,54 g",6.77,5.54],["Longitud de filamento","2,27 m","1,86 m",2.27,1.86],["Tiempo en soportes","9 min 53 s","3 min 49 s",9*60+53,3*60+49]];
-  $("#timeBars").innerHTML=`<h3>Vertical frente a horizontal</h3>`+rows.map(([n,a,b,x,y])=>{
-    const mx=Math.max(x,y),d=(x/y-1)*100;
+  $("#timeBars").innerHTML=`<h3>Vertical frente a horizontal</h3>`+rows.map(([n,a,b,x,y])=>{const mx=Math.max(x,y),d=(x/y-1)*100;
     return `<div style="margin:12px 0"><div style="display:flex;justify-content:space-between"><b>${n}</b><span style="color:var(--accent)">vertical ${d>=0?"+":""}${fmt(d,0)} %</span></div>
-    <div style="display:grid;grid-template-columns:90px 1fr 90px;gap:8px;align-items:center;font-size:13px;color:var(--muted);margin-top:4px"><span>Vertical</span><div class="meter"><i style="width:${x/mx*100}%"></i></div><span>${a}</span>
+    <div style="display:grid;grid-template-columns:80px 1fr 90px;gap:8px;align-items:center;font-size:13px;color:var(--muted);margin-top:4px"><span>Vertical</span><div class="meter"><i style="width:${x/mx*100}%"></i></div><span>${a}</span>
     <span>Horizontal</span><div class="meter"><i style="width:${y/mx*100}%;background:var(--accent2)"></i></div><span>${b}</span></div></div>`}).join("")+
     `<p class="note">Valores leídos de la vista previa del código G en Creality Print (Hi Combo, boquilla de 0,4 mm).</p>`;
 }
 
-/* comparador */
-function comparar(){
-  const e=$("#cE").value,g=$("#cG").value,ac=$("#cAc").value,ao=$("#cAo").value,bc=$("#cBc").value,bo=$("#cBo").value;
-  const vars=[["fmax_N","Fuerza máxima","N"],["deform_mm","Deformación","mm"],["peso_g","Masa","g"],["npg","Fuerza / masa","N/g"]];
-  $("#cmp tbody").innerHTML=vars.map(([k,n,u])=>{
-    const a=val(e,ac,ao,k,g),b=val(e,bc,bo,k,g),d=(b/a-1)*100;
-    return `<tr><td>${n}</td><td class="num">${fmt(a)} ${u}</td><td class="num">${fmt(b)} ${u}</td><td class="num" style="color:${d>=0?"var(--accent)":"var(--danger)"};font-weight:700">${d>=0?"+":""}${fmt(d,0)} %</td></tr>`}).join("");
-  $("#cmpNote").textContent=`A: ${CFG[ac].n}, ${ORI[ao].n}. B: ${CFG[bc].n}, ${ORI[bo].n}. ${ENS[e]}, ${g==="avg"?"media de G1 y G2":g}.`;
-}
-["#cE","#cG","#cAc","#cAo","#cBc","#cBo"].forEach(s=>$(s).addEventListener("change",comparar));
-
-/* ampliar cualquier imagen con clase zoom */
+/* galeria */
+const GAL=[
+ ["fusion","p13_0","Compresión: geometrías a preservar, obstáculo y carga"],["fusion","p14_1","Compresión: alternativa generada"],
+ ["fusion","p16_1","Flexión: alternativa generada"],["fusion","p17_1","Flexión: resultados del diseño generativo"],
+ ["fusion","p19_1","Tensión: alternativa generada"],["fusion","p20_1","Tensión: comparación de resultados"],
+ ["lam","p21_0","Creality Print: orientación en la cama"],["lam","p23_0","Creality Print: orientación inclinada"],["lam","p26_0","Creality Print: vista previa del código G"],["lam","lam_a","Tiempo y filamento: orientación vertical (90°)"],["lam","lam_b","Tiempo y filamento: orientación horizontal (0°)"],
+ ["fotos","p33_0","Distribución de las piezas en la cama"],["fotos","p33_1","Piezas impresas"],["fotos","p34_0","Piezas impresas"],["fotos","p34_1","Piezas de compresión y flexión"]];
+function gal(f){$("#gal").innerHTML=GAL.filter(g=>f==="todo"||g[0]===f).map(g=>`<figure><img class="zoom" loading="lazy" src="articulo/anexo/${g[1]}.jpg" alt="${g[2]}"><figcaption>${g[2]}</figcaption></figure>`).join("");}
+seg("#segGal",gal);gal("todo");
+$("#dlg").addEventListener("click",e=>{if(e.target===$("#dlg"))$("#dlg").close()});
 document.addEventListener("click",e=>{const i=e.target.closest("img.zoom");if(!i)return;$("#dlgimg").src=i.src;$("#dlgimg").alt=i.alt;$("#dlg").showModal()});
 
 /* ===== visor 3D (WebGL2 propio, sin librerias) ===== */
@@ -605,20 +524,11 @@ function decodeModel(m){
   return{pos,idx,zmin:(lo[2]-c[2])*s,zmax:(hi[2]-c[2])*s};
 }
 function startViewer(){
-  const sec=$("#modelo3d"),canvas=$("#cv");let m=MODELOS[0],mesh;
-  if(!m){sec.style.display="none";return;}
-  function info(){
-    $("#vName").textContent=m.name;$("#vDl").href=m.file;
-    $("#vSpecs").innerHTML=[["Dimensiones",m.dims.map(d=>fmt(d,0)).join(" × ")+" mm"],["Triángulos",m.tris.toLocaleString("es-CO")],["Volumen del sólido",fmt(m.vol_cm3,1)+" cm³"],["Archivo STL",fmt(m.mb,1)+" MB"]]
-      .map(([a,b])=>`<div><small>${a}</small><b>${b}</b></div>`).join("");
-    $("#vDesc").textContent=`Geometría ${m.diseno} de ${{C:"compresión",F:"flexión",T:"tensión"}[m.ensayo]} generada en Fusion 360. En el corte, el interior se muestra en verde.`;
-    const r=DATA.filter(d=>d.ensayo===m.ensayo&&d.diseno===m.diseno);
-    if(!r.length){$("#vData").textContent="";return;}
-    const lo=r.reduce((a,b)=>a.fmax_N<b.fmax_N?a:b),hi=r.reduce((a,b)=>a.fmax_N>b.fmax_N?a:b);
-    $("#vData").innerHTML=`Se ensayó en ${r.length} condiciones (3 configuraciones × 3 orientaciones): de <b>${fmt(lo.fmax_N)} N</b> (${CFG[lo.config].n}, ${ORI[lo.orientacion].s}) a <b>${fmt(hi.fmax_N)} N</b> (${CFG[hi.config].n}, ${ORI[hi.orientacion].s}). <a href="#explorador">Ver en el explorador</a>.`;
-  }
+  const canvas=$("#cv");let m=MODELOS[0],mesh;
+  if(!m){$("#vwrap").style.display="none";return null;}
+  const api={cur:0,onArrow:null,show:null};
   const gl=canvas.getContext("webgl2",{antialias:true,alpha:true});
-  if(!gl){canvas.style.display="none";$("#vfail").style.display="block";return;}
+  if(!gl){canvas.style.display="none";$("#vfail").style.display="block";return null;}
   const vs=`#version 300 es
 in vec3 aP;uniform mat4 uV,uP;out vec3 vPv;out float vZ;
 void main(){vec4 p=uV*vec4(aP,1.0);vPv=p.xyz;vZ=aP.z;gl_Position=uP*p;}`;
@@ -634,25 +544,22 @@ void main(){if(vZ>uCut)discard;
   const sh=(t,s)=>{const x=gl.createShader(t);gl.shaderSource(x,s);gl.compileShader(x);if(!gl.getShaderParameter(x,gl.COMPILE_STATUS))console.error(gl.getShaderInfoLog(x));return x};
   const pr=gl.createProgram();gl.attachShader(pr,sh(gl.VERTEX_SHADER,vs));gl.attachShader(pr,sh(gl.FRAGMENT_SHADER,fs));gl.linkProgram(pr);gl.useProgram(pr);
   const vao=gl.createVertexArray();gl.bindVertexArray(vao);
-  const vb=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,vb);  const loc=gl.getAttribLocation(pr,"aP");gl.enableVertexAttribArray(loc);gl.vertexAttribPointer(loc,3,gl.FLOAT,false,0,0);
-  const ib=gl.createBuffer();gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,ib);  const U=n=>gl.getUniformLocation(pr,n);
+  const vb=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,vb);
+  const loc=gl.getAttribLocation(pr,"aP");gl.enableVertexAttribArray(loc);gl.vertexAttribPointer(loc,3,gl.FLOAT,false,0,0);
+  const ib=gl.createBuffer();gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,ib);
+  const U=n=>gl.getUniformLocation(pr,n);
   gl.enable(gl.DEPTH_TEST);
   const st={yaw:.8,pitch:.45,dist:4.0,auto:!matchMedia("(prefers-reduced-motion: reduce)").matches,cut:100,dirty:true,vis:true};
   const hex=h=>{h=h.trim().replace("#","");return[0,2,4].map(i=>parseInt(h.substr(i,2),16)/255)};
-  function setModel(i){
-    m=MODELOS[i];mesh=decodeModel(m);
+  function show(i){
+    api.cur=i;m=MODELOS[i];mesh=decodeModel(m);
     gl.bindVertexArray(vao);gl.bindBuffer(gl.ARRAY_BUFFER,vb);gl.bufferData(gl.ARRAY_BUFFER,mesh.pos,gl.STATIC_DRAW);
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,ib);gl.bufferData(gl.ELEMENT_ARRAY_BUFFER,mesh.idx,gl.STATIC_DRAW);
-    cur=i;[...$("#vModels").children].forEach((b,k)=>b.setAttribute("aria-pressed",k===i));
-    $("#vCount").textContent=`${i+1} / ${MODELOS.length}`;
-    st.cut=100;$("#vCut").value=100;info();st.dirty=true;
+    st.cut=100;$("#vCut").value=100;st.dirty=true;
+    $("#vName").textContent=m.name;$("#vCount").textContent=`${i+1} / ${MODELOS.length}`;$("#vDl").href=m.file;
+    $("#vSpecs").textContent=`${m.dims.map(d=>fmt(d,0)).join(" × ")} mm · ${m.tris.toLocaleString("es-CO")} triáng. · ${fmt(m.vol_cm3,1)} cm³`;
   }
-  let cur=0;const sel=$("#vModels"),nM=MODELOS.length;
-  if(nM>1){sel.innerHTML=MODELOS.map((x,i)=>`<button data-v="${i}" aria-pressed="${i===0}">${x.name}</button>`).join("");
-    sel.addEventListener("click",e=>{const b=e.target.closest("button");if(b)setModel(+b.dataset.v)});
-    $("#vPrev").onclick=()=>setModel((cur-1+nM)%nM);$("#vNext").onclick=()=>setModel((cur+1)%nM);}
-  else{sel.parentElement.style.display="none";$("#vPrev").style.display=$("#vNext").style.display=$("#vCount").style.display="none";}
-  setModel(0);
+  api.show=show;
   function render(){
     const dpr=Math.min(devicePixelRatio||1,2),w=Math.max(1,Math.round(canvas.clientWidth*dpr)),h=Math.max(1,Math.round(canvas.clientHeight*dpr));
     if(canvas.width!==w||canvas.height!==h){canvas.width=w;canvas.height=h}
@@ -665,13 +572,14 @@ void main(){if(vZ>uCut)discard;
     gl.uniform3fv(U("uAcc"),hex(getComputedStyle(document.documentElement).getPropertyValue("--accent")));
     gl.drawElements(gl.TRIANGLES,mesh.idx.length,gl.UNSIGNED_SHORT,0);
   }
-  function loop(){if(st.vis&&(st.auto||st.dirty)){if(st.auto)st.yaw+=.006;render();st.dirty=false}requestAnimationFrame(loop)}
+  function loop(){if(mesh&&st.vis&&(st.auto||st.dirty)){if(st.auto)st.yaw+=.006;render();st.dirty=false}requestAnimationFrame(loop)}
   loop();
   new IntersectionObserver(es=>{st.vis=es[0].isIntersecting;st.dirty=true}).observe(canvas);
   new ResizeObserver(()=>{st.dirty=true}).observe(canvas);
   new MutationObserver(()=>{st.dirty=true}).observe(document.documentElement,{attributes:true});
-  const press=v=>[...$("#vViews").children].forEach(b=>b.setAttribute("aria-pressed",b.dataset.v===v));
+  const press=v=>setPressed("#vViews",v);
   const stop=()=>{if(st.auto){st.auto=false;press("")}};
+  if(!st.auto)press("");
   const pts=new Map();let pd=0;
   canvas.addEventListener("pointerdown",e=>{canvas.setPointerCapture(e.pointerId);pts.set(e.pointerId,[e.clientX,e.clientY]);if(pts.size===2){const[a,b]=[...pts.values()];pd=Math.hypot(a[0]-b[0],a[1]-b[1])}stop()});
   canvas.addEventListener("pointermove",e=>{if(!pts.has(e.pointerId))return;const p=pts.get(e.pointerId);
@@ -681,15 +589,35 @@ void main(){if(vZ>uCut)discard;
     st.dirty=true});
   ["pointerup","pointercancel"].forEach(t=>canvas.addEventListener(t,e=>{pts.delete(e.pointerId);pd=0}));
   canvas.addEventListener("wheel",e=>{e.preventDefault();st.dist=Math.max(1.8,Math.min(8,st.dist*Math.exp(e.deltaY*.0015)));st.dirty=true},{passive:false});
-  const reset=()=>{Object.assign(st,{yaw:.8,pitch:.45,dist:4.0,cut:100,dirty:true});$("#vCut").value=100};
-  canvas.addEventListener("dblclick",()=>{reset();stop()});
+  canvas.addEventListener("dblclick",()=>{Object.assign(st,{yaw:.8,pitch:.45,dist:4.0,cut:100,dirty:true});$("#vCut").value=100;stop()});
   canvas.addEventListener("keydown",e=>{const k={ArrowLeft:[.1,0],ArrowRight:[-.1,0],ArrowUp:[0,.1],ArrowDown:[0,-.1]}[e.key];if(k){e.preventDefault();stop();st.yaw+=k[0];st.pitch=Math.max(-1.55,Math.min(1.55,st.pitch+k[1]));st.dirty=true}});
-  seg("#vViews",v=>{if(v==="auto"){st.auto=true}else{st.auto=false;const V={front:[-Math.PI/2,0],top:[-Math.PI/2,1.5],iso:[.8,.45]}[v];st.yaw=V[0];st.pitch=V[1]}st.dirty=true});
+  seg("#vViews",v=>{if(v==="auto"){st.auto=true}else{st.auto=false;const A={front:[-Math.PI/2,0],top:[-Math.PI/2,1.5],iso:[.8,.45]}[v];st.yaw=A[0];st.pitch=A[1]}st.dirty=true});
   $("#vCut").addEventListener("input",e=>{st.cut=+e.target.value;st.dirty=true});
+  $("#vPrev").onclick=()=>api.onArrow&&api.onArrow(-1);$("#vNext").onclick=()=>api.onArrow&&api.onArrow(1);
+  return api;
 }
-try{startViewer()}catch(err){console.error(err);const f=$("#vfail");if(f){f.style.display="block";f.textContent="No se pudo iniciar el visor 3D. Descarga el modelo con el botón de la derecha."}}
+try{V=startViewer()}catch(err){console.error(err);const f=$("#vfail");if(f){f.style.display="block";f.textContent="No se pudo iniciar el visor 3D. Descarga el modelo con el enlace de abajo."}}
 
-findings();draw();explorer();scatter();timeBars();comparar();
+/* ===== coordinacion de todo el laboratorio ===== */
+const modelIndex=(e,d)=>MODELOS.findIndex(x=>x.ensayo===e&&x.diseno===d);
+function showTab(){["bars","sc","time","tbl","cmp"].forEach(t=>{$("#p-"+t).hidden=t!==S.tab})}
+function apply(){
+  setPressed("#segEnsayo",S.e);setPressed("#segGeo",S.g);
+  renderCond();renderDetail();renderBars();renderScatter();renderTable();renderCompare();
+  if(V){const i=modelIndex(S.e,S.g==="avg"?"G1":S.g);if(i>=0)V.show(i);}
+}
+seg("#segEnsayo",v=>{S.e=v;apply()});
+seg("#segGeo",v=>{S.g=v;apply()});
+seg("#segMetric",v=>{S.m=v;renderBars()});
+seg("#segTab",v=>{S.tab=v;showTab()});
+if(V)V.onArrow=d=>{const n=MODELOS.length,i=(V.cur+d+n)%n,x=MODELOS[i];S.e=x.ensayo;S.g=x.diseno;apply()};
+
+/* menu activo */
+const links=$$("#menu a");
+const io=new IntersectionObserver(es=>es.forEach(en=>{if(en.isIntersecting){links.forEach(a=>a.classList.toggle("active",a.getAttribute("href")==="#"+en.target.id))}}),{rootMargin:"-45% 0px -50% 0px"});
+["inicio","proyecto","laboratorio","proceso","cierre"].forEach(id=>{const el=document.getElementById(id);if(el)io.observe(el)});
+
+findings();renderTimeBars();showTab();apply();
 </script>
 </body>
 </html>
