@@ -20,7 +20,6 @@ L = [
  r"\clearpage",
  r"\onecolumn",
  r"\section*{Apéndice A. Evidencia gráfica del proceso experimental}",
- r"\pendiente{Mencionar en el texto}{Citar el Apéndice A en III.3 y III.4 (p.~ej. «véanse las Figuras A1 a A7») y precisar en qué consisten los «puntos de tensión» definidos en Fusion 360 (¿carga, apoyo o ambos?).}",
  r"\begingroup\setcounter{figure}{0}\renewcommand{\thefigure}{A\arabic{figure}}",
 ]
 for tit, ims, nota, alto in G:
